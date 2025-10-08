@@ -1,0 +1,6 @@
+@Manuscrypt.Server_HostAddress = http://localhost:5125
+
+GET {{Manuscrypt.Server_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
