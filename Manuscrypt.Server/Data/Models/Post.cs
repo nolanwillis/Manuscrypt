@@ -13,8 +13,7 @@ public class Post
     public string? FileUrl { get; set; }           // Full URL to the blob (e.g. https://cdn.mysite.com/posts/file123.pdf)
     public string? FileName { get; set; }          // Original filename for display
     public string? FileType { get; set; }          // MIME type (e.g., application/pdf, text/plain)
-    public long? FileSizeBytes { get; set; }       // For info or validation
-    public DateTime? FileUploadedAt { get; set; }  // Optional tracking
+    public long? FileSizeBytes { get; set; }       // For info or validation 
 
     // Navigation
     public Channel Channel { get; set; } = null!;

@@ -1,10 +1,12 @@
 import { StrictMode } from 'react'
 import { createRoot } from 'react-dom/client'
 import './index.css'
-import App from './App.jsx'
+import CreatePost from './components/CreatePost.jsx'
+import CreateChannel from './components/CreateChannel.jsx'
 
-createRoot(document.getElementById('root')).render(
-  <StrictMode>
-    <App />
-  </StrictMode>,
+createRoot(document.getElementById('root')).render
+(
+    <StrictMode>
+        <CreateChannel />
+    </StrictMode>,
 )

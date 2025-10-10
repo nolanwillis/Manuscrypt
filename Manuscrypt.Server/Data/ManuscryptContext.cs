@@ -5,13 +5,14 @@ namespace Manuscrypt.Server.Data;
 
 public class ManuscryptContext : DbContext
 {
-    public DbSet<Channel> Channels => Set<Channel>();
-    public DbSet<User> Users => Set<User>();
-    public DbSet<Subscription> Subscriptions => Set<Subscription>();
-    public DbSet<Post> Posts => Set<Post>();
-    public DbSet<Comment> Comments => Set<Comment>();
-    public DbSet<Edit> Edits => Set<Edit>();
-    public DbSet<PostTag> PostTags => Set<PostTag>();
-
     public ManuscryptContext(DbContextOptions<ManuscryptContext> options) : base(options) {}
+    
+    public DbSet<Channel> Channels { get; set; }
+    public DbSet<User> Users { get; set; }
+    public DbSet<Subscription> Subscriptions { get; set; }
+    public DbSet<Post> Posts { get; set; }
+    public DbSet<Comment> Comments { get; set; }
+    public DbSet<Edit> Edits { get; set; }
+    public DbSet<PostTag> PostTags { get; set; }
+    
 }
