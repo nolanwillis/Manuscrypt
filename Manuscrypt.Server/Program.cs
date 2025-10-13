@@ -35,6 +35,7 @@ builder.Services.AddScoped<UserRepo>();
 
 builder.Services.AddScoped<PostService>();
 builder.Services.AddScoped<ChannelService>();
+builder.Services.AddScoped<UserService>();
 
 var app = builder.Build();
 

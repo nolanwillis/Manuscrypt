@@ -1,4 +1,5 @@
 ﻿using Manuscrypt.Server.Data.Models;
+using Microsoft.EntityFrameworkCore;
 
 namespace Manuscrypt.Server.Data.Repositories;
 
@@ -15,4 +16,7 @@ public class UserRepo : IRepo<User>
     public async Task AddAsync(User entity) => await _dbContext.AddAsync(entity);
     public void Update(User entity) => _dbContext.Update(entity);
     public void Delete(User entity) => _dbContext.Remove(entity);
+
+    public async Task<User?> FindByEmailAsync(string email) 
+        => await _dbContext.Users.FirstOrDefaultAsync(u  => u.Email == email);
 }

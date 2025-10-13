@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Manuscrypt.Server.Data.DTOs;
 using Manuscrypt.Server.Services;
+using Manuscrypt.Server.Services.Exceptions;
 
 namespace Manuscrypt.Server.Controllers;
 
@@ -23,13 +24,14 @@ public class ChannelController : ControllerBase
             return BadRequest("Post data is required.");
         }
 
-        ChannelDTO createdChannel = await _channelService.CreateChannelAsync(channelDto);
-
-        if (createdChannel == null)
+        try
         {
-            return StatusCode(500, "A problem happened with creating the post.");
+            ChannelDTO createdChannel = await _channelService.CreateChannelAsync(channelDto);
+            return CreatedAtAction(nameof(CreateChannel), new { id = createdChannel.Id }, createdChannel);
         }
-
-        return CreatedAtAction(nameof(CreateChannel), new { id = createdChannel.Id }, createdChannel);
+        catch (ChannelNameTakenException ex)
+        {
+            return BadRequest(ex.Message);
+        }
     }
 }
