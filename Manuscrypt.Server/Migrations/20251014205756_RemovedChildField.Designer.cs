@@ -3,6 +3,7 @@ using System;
 using Manuscrypt.Server.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
@@ -11,9 +12,11 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace Manuscrypt.Server.Migrations
 {
     [DbContext(typeof(ManuscryptContext))]
-    partial class ManuscryptContextModelSnapshot : ModelSnapshot
+    [Migration("20251014205756_RemovedChildField")]
+    partial class RemovedChildField
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -124,24 +127,20 @@ namespace Manuscrypt.Server.Migrations
                     b.Property<int>("ChannelId")
                         .HasColumnType("integer");
 
-                    b.Property<string>("Description")
-                        .IsRequired()
-                        .HasColumnType("text");
-
                     b.Property<string>("FileName")
-                        .IsRequired()
                         .HasColumnType("text");
 
-                    b.Property<long>("FileSizeBytes")
+                    b.Property<long?>("FileSizeBytes")
                         .HasColumnType("bigint");
 
                     b.Property<string>("FileType")
-                        .IsRequired()
                         .HasColumnType("text");
 
                     b.Property<string>("FileUrl")
-                        .IsRequired()
                         .HasColumnType("text");
+
+                    b.Property<bool>("IsForChildren")
+                        .HasColumnType("boolean");
 
                     b.Property<DateTime>("PublishedAt")
                         .HasColumnType("timestamp with time zone");
@@ -237,13 +236,11 @@ namespace Manuscrypt.Server.Migrations
 
             modelBuilder.Entity("Manuscrypt.Server.Data.Models.Channel", b =>
                 {
-                    b.HasOne("Manuscrypt.Server.Data.Models.User", "User")
+                    b.HasOne("Manuscrypt.Server.Data.Models.User", null)
                         .WithOne("Channel")
                         .HasForeignKey("Manuscrypt.Server.Data.Models.Channel", "UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
-
-                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("Manuscrypt.Server.Data.Models.Comment", b =>

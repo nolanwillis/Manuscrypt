@@ -2,6 +2,7 @@
 using Manuscrypt.Server.Data.DTOs;
 using Manuscrypt.Server.Data.Models;
 using Manuscrypt.Server.Data.Repositories;
+using Manuscrypt.Server.Services.Exceptions;
 
 namespace Manuscrypt.Server.Services;
 
@@ -18,41 +19,32 @@ public class PostService
         _channelRepo = channelRepo;
     }
 
-    public async Task<PostDTO> CreatePostAsync(PostDTO postDto)
+    public async Task<int> CreatePostAsync(CreatePostDTO createPostDto)
     {
-        
-        // Map DTO to Post entity.
+        var channel = await _channelRepo.FindByUserIdAsync(createPostDto.UserId);
+
+        if (channel == null)
+        {
+            throw new ChannelDoesNotExistException(createPostDto.UserId);
+        }
+
+        // Add a new Post to the DB.
         var post = new Post
         {
-            ChannelId = postDto.ChannelId,
-            Title = postDto.Title,
+            ChannelId = channel.Id,
+            Title = createPostDto.Title,
+            Description = createPostDto.Description,
             PublishedAt = DateTime.UtcNow,
             Views = 0,
-            IsForChildren = postDto.IsForChildren,
-            FileUrl = postDto.FileUrl,
-            FileName = postDto.FileName,
-            FileType = postDto.FileType,
-            FileSizeBytes = postDto.FileSizeBytes,
+            FileUrl = createPostDto.FileUrl,
+            FileName = createPostDto.FileName,
+            FileType = createPostDto.FileType,
+            FileSizeBytes = createPostDto.FileSizeBytes,
+            Channel = channel
         };
-        
-
-        // Use PostRepo to add and save to the database.
         await _postRepo.AddAsync(post);
         await _context.SaveChangesAsync();
-        
-        // Create the return DTO.
-        var associatedChannel = await _channelRepo.FindByIdAsync(postDto.ChannelId);
-        var postDTO = new PostDTO
-        {
-            Id = post.Id,
-            ChannelId = post.ChannelId,
-            ChannelName = associatedChannel?.Name ?? "",
-            Title = post.Title,
-            PublishedAt = post.PublishedAt,
-            Views = post.Views,
-            IsForChildren = post.IsForChildren 
-        };
 
-        return postDTO;
+        return post.Id;
     }
 }

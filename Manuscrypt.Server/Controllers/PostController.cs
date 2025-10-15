@@ -1,6 +1,7 @@
-﻿using Microsoft.AspNetCore.Mvc;
-using Manuscrypt.Server.Data.DTOs;
+﻿using Manuscrypt.Server.Data.DTOs;
 using Manuscrypt.Server.Services;
+using Manuscrypt.Server.Services.Exceptions;
+using Microsoft.AspNetCore.Mvc;
 
 namespace Manuscrypt.Server.Controllers;
 
@@ -16,20 +17,21 @@ public class PostController : ControllerBase
     }
 
     [HttpPost]
-    public async Task<ActionResult<PostDTO>> CreatePost([FromBody] PostDTO postDto)
+    public async Task<ActionResult<int>> CreatePost([FromBody] CreatePostDTO createPostDTO)
     {
-        if (postDto == null)
+        if (createPostDTO == null)
         {
             return BadRequest("Post data is required.");
         }
 
-        PostDTO createdPost = await _postService.CreatePostAsync(postDto);
-
-        if (createdPost == null)
+        try
         {
-            return StatusCode(500, "A problem happened with creating the post.");
+            int postId = await _postService.CreatePostAsync(createPostDTO);
+            return CreatedAtAction(nameof(CreatePost), new { id = postId });
         }
-
-        return CreatedAtAction(nameof(CreatePost), new { id = createdPost.Id }, createdPost);
+        catch (ChannelDoesNotExistException ex)
+        {
+            return BadRequest(ex.Message);
+        }
     }
 }

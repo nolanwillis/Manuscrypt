@@ -5,15 +5,14 @@ public class Post
     public int Id { get; set; }
     public int ChannelId { get; set; }
     public string Title { get; set; } = string.Empty;
+    public string Description { get; set; } = string.Empty;
     public DateTime PublishedAt { get; set; } = DateTime.UtcNow;
-    public int Views { get; set; } = 0;
-    public bool IsForChildren { get; set; } = true;
+    public int Views { get; set; }
 
-    // Blob-related fields
-    public string? FileUrl { get; set; }           // Full URL to the blob (e.g. https://cdn.mysite.com/posts/file123.pdf)
-    public string? FileName { get; set; }          // Original filename for display
-    public string? FileType { get; set; }          // MIME type (e.g., application/pdf, text/plain)
-    public long? FileSizeBytes { get; set; }       // For info or validation 
+    public string FileUrl { get; set; } = string.Empty;
+    public string FileName { get; set; } = string.Empty;          
+    public string FileType { get; set; } = string.Empty;          
+    public long FileSizeBytes { get; set; }       
 
     // Navigation
     public Channel Channel { get; set; } = null!;

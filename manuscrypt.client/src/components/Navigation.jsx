@@ -1,6 +1,15 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import { useNavigate, Link } from "react-router-dom";
 
-export default function NavBar({ isLoggedIn, onLoginPress, onLogoutPress }) {
+export default function NavBar({ isLoggedIn, onLogoutClicked }) {
+    const navigate = useNavigate();
+
+    const loginBtnHandler = () => {
+        navigate("/login");
+    }
+     const createAccountBtnHandler = () => {
+        navigate("/create-account");
+    }
     
     return (
         <nav className="fixed top-0 left-0 bottom-0 w-64 z-50 bg-background/80 border-r flex flex-col">
@@ -13,15 +22,18 @@ export default function NavBar({ isLoggedIn, onLoginPress, onLogoutPress }) {
             <div className="flex-1 flex flex-col justify-between py-6">
                 {isLoggedIn && (
                     <div className="space-y-2 px-4">
-                        <a href="/" className="block px-4 py-3 rounded-lg">
+                        <Link to="/" className="block px-4 py-3 rounded-lg">
                             Home
-                        </a>
-                        <a href="#subscriptions" className="block px-4 py-3 rounded-lg">
+                        </Link>
+                        <Link to="/subscriptions" className="block px-4 py-3 rounded-lg">
                             Subscriptions
-                        </a>
-                        <a href="#channels" className="block px-4 py-3 rounded-lg">
+                        </Link>
+                        <Link to="/channel" className="block px-4 py-3 rounded-lg">
                             My Channel
-                        </a>
+                        </Link>
+                        <Link to="/create-post" className="block px-4 py-3 rounded-lg">
+                            Create Post
+                        </Link>
                     </div>
                 )}
                 <div className="space-y-2 px-4">
@@ -31,17 +43,29 @@ export default function NavBar({ isLoggedIn, onLoginPress, onLogoutPress }) {
                     {isLoggedIn ? (
                         <button
                             className="w-full px-4 py-2 rounded-lg"
-                            onClick={onLogoutPress}
+                            onClick={() => {
+                                onLogoutClicked();
+                                navigate("/");
+                            }}
                         >
-                            Sign Out
+                            Logout
                         </button>
                     ) : (
-                        <button
-                            className="w-full px-4 py-2 rounded-lg"
-                            onClick={onLoginPress}
-                        >
-                            Sign In
-                        </button>
+                        <div> 
+                            <button
+                                    className="w-full px-4 py-2 rounded-lg"
+                                    onClick={loginBtnHandler}
+                            >
+                                Login
+                            </button>
+                            <button
+                                    className="w-full px-4 py-2 rounded-lg"
+                                    onClick={createAccountBtnHandler}
+                            >
+                                Create Account
+                            </button>
+                        </div>
+
                     )}
                 </div>
             </div>

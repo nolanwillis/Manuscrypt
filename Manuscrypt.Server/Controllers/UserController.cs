@@ -16,13 +16,38 @@ public class UserController : ControllerBase
         _userService = userService;
     }
 
-    [HttpGet]
-    public async Task<ActionResult<UserDTO>> Login([FromQuery] string email)
+
+    [HttpPost]
+    public async Task<ActionResult<int>> CreateUser([FromBody] CreateUserDTO createUserDTO)
     {
+        if (createUserDTO == null)
+        {
+            return BadRequest("User data is required.");
+        }
+
         try
         {
-            UserDTO user = await _userService.Login(email);
-            return Ok(user);
+            int userId = await _userService.CreateUser(createUserDTO);
+            return CreatedAtAction(nameof(CreateUser), new { id = userId });
+        }
+        catch (UserExistsException ex)
+        {
+            return BadRequest(ex.Message);
+        }
+    }
+
+    [HttpPost("Login")]
+    public async Task<ActionResult<int>> Login([FromBody] LoginDTO loginDto)
+    {
+        if (loginDto == null || string.IsNullOrEmpty(loginDto.Email) || string.IsNullOrEmpty(loginDto.Password))
+        {
+            return BadRequest("Email and password are required.");
+        }
+
+        try
+        {
+            int userId = await _userService.Login(loginDto);
+            return Ok(new { id = userId});
         }
         catch (UserDoesNotExistException ex)
         {

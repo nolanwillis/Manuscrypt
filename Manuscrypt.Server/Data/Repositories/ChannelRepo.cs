@@ -1,6 +1,5 @@
 ﻿using Manuscrypt.Server.Data.Models;
 using Microsoft.EntityFrameworkCore;
-using System.Reflection.Metadata.Ecma335;
 
 namespace Manuscrypt.Server.Data.Repositories;
 
@@ -18,7 +17,6 @@ public class ChannelRepo : IRepo<Channel>
     public void Update(Channel entity) => _dbContext.Update(entity);
     public void Delete(Channel entity) => _dbContext.Remove(entity);
 
-    public async Task<bool> DoesChannelNameExistAsync(string name) 
-        => await _dbContext.Channels.AnyAsync(c => c.Name == name);
-    
+    public async Task<Channel?> FindByUserIdAsync(int userId) => 
+        await _dbContext.Channels.FirstOrDefaultAsync(c => c.UserId == userId);
 }

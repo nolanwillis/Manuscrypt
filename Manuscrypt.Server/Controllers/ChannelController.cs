@@ -14,24 +14,5 @@ public class ChannelController : ControllerBase
     public ChannelController(ChannelService channelService)
     {
         _channelService = channelService;
-    }
-
-    [HttpPost]
-    public async Task<ActionResult<ChannelDTO>> CreateChannel([FromBody] ChannelDTO channelDto)
-    {
-        if (channelDto == null)
-        {
-            return BadRequest("Post data is required.");
-        }
-
-        try
-        {
-            ChannelDTO createdChannel = await _channelService.CreateChannelAsync(channelDto);
-            return CreatedAtAction(nameof(CreateChannel), new { id = createdChannel.Id }, createdChannel);
-        }
-        catch (ChannelNameTakenException ex)
-        {
-            return BadRequest(ex.Message);
-        }
-    }
+    } 
 }

@@ -1,38 +1,44 @@
 import React, { useState, useEffect } from 'react';
-import CreatePost from './components/CreatePost.jsx'
-import CreateChannel from './components/CreateChannel.jsx'
-import Login from './components/Login.jsx'
-import Navigation from './components/Navigation.jsx'
-
+import { BrowserRouter as Router, Routes, Route, Navigate } from "react-router-dom";
+import Layout from './components/Layout.jsx';
+import Home from './components/Home.jsx';
+import CreatePost from './components/CreatePost.jsx';
+import Login from './components/Login.jsx';
+import CreateAccount from './components/CreateAccount.jsx';
 export default function App() {
-    const [userId, setUserId] = useState(null)
-    const [isLoginOpen, setIsLoginOpen] = useState(false);
+    const [userId, setUserId] = useState(0);
 
     useEffect(() => {
         const storedUserId = sessionStorage.getItem('userId');
         setUserId(storedUserId);
     }, []);
 
-    const handleLoginPress = () => {
-        setIsLoginOpen(true);
-    }
-
-    const handleLogoutPress = () => {
+    const handleLogoutClicked = () => {
         sessionStorage.removeItem('userId');
-        setUserId(null);
-    }
+        setUserId(0);
+    };
 
-    const handleUserFound = (userId) => {
+    const handleUserIdReceived = (userId) => {
+        sessionStorage.setItem('userId', userId);
         setUserId(userId);
-        setIsLoginOpen(false)
-    }
+    };
 
     return (
-        <div className="min-h-screen relative">
-            <Navigation isLoggedIn={userId} onLoginPress={handleLoginPress} onLogoutPress={handleLogoutPress} />
-            <main className="flex-1 flex items-center justify-center pl-128">
-                {isLoginOpen && <Login onUserFound={handleUserFound} />}
-            </main>
-        </div>
+        <Router>
+            <Routes>
+                <Route
+                    path="/"
+                    element={
+                        <Layout userId={userId} logoutBtnHandler={handleLogoutClicked} />
+                    }
+                >
+                    <Route index element={<Home />} />
+                    <Route path="create-post" element={<CreatePost />} />
+                    <Route path="login" element={<Login onUserIdReceived={handleUserIdReceived} />} />
+                    <Route path="create-account" element={<CreateAccount onUserIdReceived={handleUserIdReceived} />} />
+                </Route>i
+                <Route path="*" element={<Navigate to="/" />} />
+            </Routes>
+        </Router>
     );
 }
