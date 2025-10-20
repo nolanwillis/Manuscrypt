@@ -25,16 +25,14 @@ builder.Services.AddSwaggerGen();
 
 builder.Services.AddEndpointsApiExplorer();
 
-builder.Services.AddScoped<ChannelRepo>();
 builder.Services.AddScoped<CommentRepo>();
-builder.Services.AddScoped<EditRepo>();
 builder.Services.AddScoped<PostRepo>();
-builder.Services.AddScoped<PostTagRepo>();
 builder.Services.AddScoped<SubscriptionRepo>();
 builder.Services.AddScoped<UserRepo>();
 
+builder.Services.AddScoped<CommentService>();
 builder.Services.AddScoped<PostService>();
-builder.Services.AddScoped<ChannelService>();
+builder.Services.AddScoped<SubscriptionService>();
 builder.Services.AddScoped<UserService>();
 
 var app = builder.Build();
@@ -57,4 +55,11 @@ app.UseCors();
 app.UseAuthorization();
 app.MapControllers();
 app.MapFallbackToFile("/index.html");
+
+using (var scope = app.Services.CreateScope())
+{
+    var db = scope.ServiceProvider.GetRequiredService<ManuscryptContext>();
+    await Seed.SeedUsersAndPostsAsync(db, 5, 15);
+}
+
 app.Run();

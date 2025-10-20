@@ -21,7 +21,7 @@ export default function Login({ onUserIdReceived }) {
             if (!password) {
                 throw new Error('Password is required.');
             }
-            const response = await fetch('http://localhost:5125/user/login', {
+            const response = await fetch('https://localhost:7053/user/login', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',

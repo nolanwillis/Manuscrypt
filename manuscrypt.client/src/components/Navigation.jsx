@@ -4,10 +4,10 @@ import { useNavigate, Link } from "react-router-dom";
 export default function NavBar({ isLoggedIn, onLogoutClicked }) {
     const navigate = useNavigate();
 
-    const loginBtnHandler = () => {
+    const handleLogin = () => {
         navigate("/login");
     }
-     const createAccountBtnHandler = () => {
+     const handleCreateAccount = () => {
         navigate("/create-account");
     }
     
@@ -28,8 +28,8 @@ export default function NavBar({ isLoggedIn, onLogoutClicked }) {
                         <Link to="/subscriptions" className="block px-4 py-3 rounded-lg">
                             Subscriptions
                         </Link>
-                        <Link to="/channel" className="block px-4 py-3 rounded-lg">
-                            My Channel
+                        <Link to="/my-account" className="block px-4 py-3 rounded-lg">
+                            My Account
                         </Link>
                         <Link to="/create-post" className="block px-4 py-3 rounded-lg">
                             Create Post
@@ -54,13 +54,13 @@ export default function NavBar({ isLoggedIn, onLogoutClicked }) {
                         <div> 
                             <button
                                     className="w-full px-4 py-2 rounded-lg"
-                                    onClick={loginBtnHandler}
+                                    onClick={handleLogin}
                             >
                                 Login
                             </button>
                             <button
                                     className="w-full px-4 py-2 rounded-lg"
-                                    onClick={createAccountBtnHandler}
+                                    onClick={handleCreateAccount}
                             >
                                 Create Account
                             </button>

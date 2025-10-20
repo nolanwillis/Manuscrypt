@@ -42,7 +42,7 @@ export default function CreateAccount({ onUserIdReceived }) {
         }
 
         try {
-            const response = await fetch('http://localhost:5125/user', {
+            const response = await fetch('https://localhost:7053/user', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',

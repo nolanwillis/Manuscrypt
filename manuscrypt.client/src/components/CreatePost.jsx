@@ -33,7 +33,7 @@ export default function CreatePost({ onPostCreated }) {
             let fileType = file.type;
             let fileSizeBytes = file.size;
 
-            const response = await fetch('http://localhost:5125/post', {
+            const response = await fetch('https://localhost:7053/post', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',

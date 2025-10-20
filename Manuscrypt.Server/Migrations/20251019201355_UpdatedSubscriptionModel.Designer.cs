@@ -3,6 +3,7 @@ using System;
 using Manuscrypt.Server.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
@@ -11,9 +12,11 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace Manuscrypt.Server.Migrations
 {
     [DbContext(typeof(ManuscryptContext))]
-    partial class ManuscryptContextModelSnapshot : ModelSnapshot
+    [Migration("20251019201355_UpdatedSubscriptionModel")]
+    partial class UpdatedSubscriptionModel
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -52,6 +55,45 @@ namespace Manuscrypt.Server.Migrations
                     b.ToTable("Comments");
                 });
 
+            modelBuilder.Entity("Manuscrypt.Server.Data.Models.Edit", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("OriginalText")
+                        .HasColumnType("text");
+
+                    b.Property<int>("PostId")
+                        .HasColumnType("integer");
+
+                    b.Property<int>("Status")
+                        .HasColumnType("integer");
+
+                    b.Property<int>("SubscriberId")
+                        .HasColumnType("integer");
+
+                    b.Property<string>("SuggestedText")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<int>("UserId")
+                        .HasColumnType("integer");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("PostId");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("Edits");
+                });
+
             modelBuilder.Entity("Manuscrypt.Server.Data.Models.Post", b =>
                 {
                     b.Property<int>("Id")
@@ -79,10 +121,6 @@ namespace Manuscrypt.Server.Migrations
                         .IsRequired()
                         .HasColumnType("text");
 
-                    b.PrimitiveCollection<int[]>("PostTags")
-                        .IsRequired()
-                        .HasColumnType("integer[]");
-
                     b.Property<DateTime>("PublishedAt")
                         .HasColumnType("timestamp with time zone");
 
@@ -101,6 +139,27 @@ namespace Manuscrypt.Server.Migrations
                     b.HasIndex("UserId");
 
                     b.ToTable("Posts");
+                });
+
+            modelBuilder.Entity("Manuscrypt.Server.Data.Models.PostTag", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<int>("PostId")
+                        .HasColumnType("integer");
+
+                    b.Property<int>("Tag")
+                        .HasColumnType("integer");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("PostId");
+
+                    b.ToTable("PostTags");
                 });
 
             modelBuilder.Entity("Manuscrypt.Server.Data.Models.Subscription", b =>
@@ -182,6 +241,25 @@ namespace Manuscrypt.Server.Migrations
                     b.Navigation("User");
                 });
 
+            modelBuilder.Entity("Manuscrypt.Server.Data.Models.Edit", b =>
+                {
+                    b.HasOne("Manuscrypt.Server.Data.Models.Post", "Post")
+                        .WithMany("Edits")
+                        .HasForeignKey("PostId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Manuscrypt.Server.Data.Models.User", "User")
+                        .WithMany("Edits")
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Post");
+
+                    b.Navigation("User");
+                });
+
             modelBuilder.Entity("Manuscrypt.Server.Data.Models.Post", b =>
                 {
                     b.HasOne("Manuscrypt.Server.Data.Models.User", null)
@@ -189,6 +267,17 @@ namespace Manuscrypt.Server.Migrations
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+                });
+
+            modelBuilder.Entity("Manuscrypt.Server.Data.Models.PostTag", b =>
+                {
+                    b.HasOne("Manuscrypt.Server.Data.Models.Post", "Post")
+                        .WithMany("PostTags")
+                        .HasForeignKey("PostId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Post");
                 });
 
             modelBuilder.Entity("Manuscrypt.Server.Data.Models.Subscription", b =>
@@ -213,11 +302,17 @@ namespace Manuscrypt.Server.Migrations
             modelBuilder.Entity("Manuscrypt.Server.Data.Models.Post", b =>
                 {
                     b.Navigation("Comments");
+
+                    b.Navigation("Edits");
+
+                    b.Navigation("PostTags");
                 });
 
             modelBuilder.Entity("Manuscrypt.Server.Data.Models.User", b =>
                 {
                     b.Navigation("Comments");
+
+                    b.Navigation("Edits");
 
                     b.Navigation("Subscribers");
 

@@ -16,9 +16,78 @@ public class UserController : ControllerBase
         _userService = userService;
     }
 
+    [HttpGet("{id}")]
+    public async Task<ActionResult<UserDTO>> GetUserAsync(int id)
+    {
+        try
+        {
+            var userDto = await _userService.GetUserAsync(id);
+            return Ok(userDto);
+        }
+        catch (UserDNEWithIdException ex)
+        {
+            return NotFound(ex.Message);
+        }
+        catch (Exception ex)
+        {
+            return BadRequest(ex.Message);
+        }
+    }
+    [HttpGet("{userId}/comments")]
+    public async Task<ActionResult<IEnumerable<CommentDTO>>> GetCommentsByUserAsync(int userId)
+    {
+        try
+        {
+            var commentDTOs = await _userService.GetCommentsByUserAsync(userId);
+            return Ok(commentDTOs);
+        }
+        catch (Exception ex)
+        {
+            return BadRequest(ex.Message);
+        }
+    }
+    [HttpGet("{userId}/posts")]
+    public async Task<ActionResult<IEnumerable<PostDTO>>> GetPostsForUserAsync(int userId)
+    {
+        try
+        {
+            var postDTOs = await _userService.GetPostsForUserAsync(userId);
+            return Ok(postDTOs);
+        }
+        catch (Exception ex)
+        {
+            return BadRequest(ex.Message);
+        }
+    }
+    [HttpGet("{userId}/subscribers")]
+    public async Task<ActionResult<IEnumerable<SubscriptionDTO>>> GetSubscribersForUserAsync(int userId)
+    {
+        try
+        {
+            var subscriptionDTOs = await _userService.GetSubscribersForUserAsync(userId);
+            return Ok(subscriptionDTOs);
+        }
+        catch (Exception ex)
+        {
+            return BadRequest(ex.Message);
+        }
+    }
+    [HttpGet("{userId}/subscriptions")]
+    public async Task<ActionResult<IEnumerable<SubscriptionDTO>>> GetSubscrptionsForUserAsync(int userId)
+    {
+        try
+        {
+            var subscriptionDTOs = await _userService.GetSubscriptionsForUserAsync(userId);
+            return Ok(subscriptionDTOs);
+        }
+        catch (Exception ex)
+        {
+            return BadRequest(ex.Message);
+        }
+    }
 
     [HttpPost]
-    public async Task<ActionResult<int>> CreateUser([FromBody] CreateUserDTO createUserDTO)
+    public async Task<ActionResult<int>> CreateUserAsync([FromBody] CreateUserDTO createUserDTO)
     {
         if (createUserDTO == null)
         {
@@ -27,17 +96,16 @@ public class UserController : ControllerBase
 
         try
         {
-            int userId = await _userService.CreateUser(createUserDTO);
-            return CreatedAtAction(nameof(CreateUser), new { id = userId });
+            int userId = await _userService.CreateUserAsync(createUserDTO);
+            return CreatedAtAction(nameof(CreateUserAsync), new { id = userId });
         }
-        catch (UserExistsException ex)
+        catch (Exception ex)
         {
             return BadRequest(ex.Message);
         }
     }
-
-    [HttpPost("Login")]
-    public async Task<ActionResult<int>> Login([FromBody] LoginDTO loginDto)
+    [HttpPost("login")]
+    public async Task<ActionResult<int>> LoginAsync([FromBody] LoginDTO loginDto)
     {
         if (loginDto == null || string.IsNullOrEmpty(loginDto.Email) || string.IsNullOrEmpty(loginDto.Password))
         {
@@ -46,12 +114,16 @@ public class UserController : ControllerBase
 
         try
         {
-            int userId = await _userService.Login(loginDto);
-            return Ok(new { id = userId});
+            int userId = await _userService.LoginAsync(loginDto);
+            return Ok(new { id = userId });
         }
-        catch (UserDoesNotExistException ex)
+        catch (UserDNEWithEmailException ex)
         {
             return NotFound(ex.Message);
+        }
+        catch (Exception ex)
+        {
+            return BadRequest(ex.Message);
         }
     }
 }

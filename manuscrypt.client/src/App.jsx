@@ -5,6 +5,9 @@ import Home from './components/Home.jsx';
 import CreatePost from './components/CreatePost.jsx';
 import Login from './components/Login.jsx';
 import CreateAccount from './components/CreateAccount.jsx';
+import MyChannel from './components/MyAccount.jsx';
+import Post from './components/Post.jsx'
+
 export default function App() {
     const [userId, setUserId] = useState(0);
 
@@ -33,10 +36,12 @@ export default function App() {
                     }
                 >
                     <Route index element={<Home />} />
+                    <Route path="my-account" element={<MyChannel />} />
                     <Route path="create-post" element={<CreatePost />} />
                     <Route path="login" element={<Login onUserIdReceived={handleUserIdReceived} />} />
                     <Route path="create-account" element={<CreateAccount onUserIdReceived={handleUserIdReceived} />} />
-                </Route>i
+                    <Route path="post/:postId" element={<Post />} />
+                </Route>
                 <Route path="*" element={<Navigate to="/" />} />
             </Routes>
         </Router>
