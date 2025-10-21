@@ -1,5 +1,5 @@
 ﻿using Manuscrypt.Server.Data;
-using Manuscrypt.Server.Data.DTOs;
+using Manuscrypt.Server.Data.DTOs.Comment;
 using Manuscrypt.Server.Data.Models;
 using Manuscrypt.Server.Data.Repositories;
 using Manuscrypt.Server.Services.Exceptions;
@@ -17,7 +17,7 @@ namespace Manuscrypt.Server.Services
             _commentRepo = commentRepo;
         }
 
-        public async Task<CommentDTO> GetCommentAsync(int commentId)
+        public async Task<GetCommentDTO> GetCommentAsync(int commentId)
         {
             var comment = await _commentRepo.GetAsync(commentId);
             if (comment == null)
@@ -25,7 +25,7 @@ namespace Manuscrypt.Server.Services
                 throw new CommentDoesNotExistException(commentId);
             }
 
-            var commentDTO = new CommentDTO
+            var commentDTO = new GetCommentDTO
             {
                 Id = comment.Id,
                 PostId = comment.PostId,
@@ -36,11 +36,11 @@ namespace Manuscrypt.Server.Services
 
             return commentDTO;
         }
-        public async Task<IEnumerable<CommentDTO>> GetCommentsAsync()
+        public async Task<IEnumerable<GetCommentDTO>> GetCommentsAsync()
         {
             var comments = await _commentRepo.GetAllAsync();
 
-            var commentDTOs = comments.Select(comment => new CommentDTO
+            var commentDTOs = comments.Select(comment => new GetCommentDTO
             {
                 Id = comment.Id,
                 PostId = comment.PostId,
@@ -52,21 +52,46 @@ namespace Manuscrypt.Server.Services
             return commentDTOs;
         }
 
-        public async Task<int> CreateCommentAsync(CommentDTO commentDTO)
+        public async Task<int> CreateCommentAsync(CreateCommentDTO createCommentDTO)
         {
             // Add a new Comment to the DB.
             var comment = new Comment
             {
-                PostId = commentDTO.PostId,
-                UserId = commentDTO.UserId,
-                Content = commentDTO.Content,
-                CreatedAt = commentDTO.CreatedAt
+                PostId = createCommentDTO.PostId,
+                UserId = createCommentDTO.UserId,
+                Content = createCommentDTO.Content,
+                CreatedAt = createCommentDTO.CreatedAt
             };
 
             await _commentRepo.AddAsync(comment);
             await _context.SaveChangesAsync();
 
             return comment.Id;
+        }
+
+        public async Task UpdateCommentAsync(UpdateCommentDTO updateCommentDTO)
+        {
+            var comment = await _commentRepo.GetAsync(updateCommentDTO.Id);
+            if (comment == null)
+            {
+                throw new CommentDoesNotExistException(updateCommentDTO.Id);
+            }
+
+            comment.Content = updateCommentDTO.Content;
+            _commentRepo.Update(comment);
+            _context.SaveChanges();
+        }
+
+        public async Task DeleteCommentAsync(int commentId)
+        {
+            var comment = await _commentRepo.GetAsync(commentId);
+            if (comment == null)
+            {
+                throw new CommentDoesNotExistException(commentId);
+            }
+
+            _commentRepo.Delete(comment);
+            _context.SaveChanges();
         }
     }
 }

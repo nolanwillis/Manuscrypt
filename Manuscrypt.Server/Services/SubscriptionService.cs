@@ -1,5 +1,5 @@
 ﻿using Manuscrypt.Server.Data;
-using Manuscrypt.Server.Data.DTOs;
+using Manuscrypt.Server.Data.DTOs.Subscription;
 using Manuscrypt.Server.Data.Models;
 using Manuscrypt.Server.Data.Repositories;
 using Manuscrypt.Server.Services.Exceptions;
@@ -17,7 +17,7 @@ namespace Manuscrypt.Server.Services
             _subscriptionRepo = subscriptionRepo;
         }
 
-        public async Task<SubscriptionDTO> GetSubscriptionAsync(int subscriptionId)
+        public async Task<GetSubscriptionDTO> GetSubscriptionAsync(int subscriptionId)
         {
             var subscription = await _subscriptionRepo.GetAsync(subscriptionId);
             if (subscription == null)
@@ -25,7 +25,7 @@ namespace Manuscrypt.Server.Services
                 throw new CommentDoesNotExistException(subscriptionId);
             }
 
-            var subscriptionDTO = new SubscriptionDTO
+            var subscriptionDTO = new GetSubscriptionDTO
             {
                 Id = subscription.Id,
                 SubscriberId = subscription.SubscriberId,
@@ -35,11 +35,11 @@ namespace Manuscrypt.Server.Services
 
             return subscriptionDTO;
         }
-        public async Task<IEnumerable<SubscriptionDTO>> GetSubscriptionsAsync()
+        public async Task<IEnumerable<GetSubscriptionDTO>> GetSubscriptionsAsync()
         {
             var subscriptions = await _subscriptionRepo.GetAllAsync();
 
-            var subscriptionDTOs = subscriptions.Select(subscription => new SubscriptionDTO
+            var subscriptionDTOs = subscriptions.Select(subscription => new GetSubscriptionDTO
             {
                 Id = subscription.Id,
                 SubscriberId = subscription.SubscriberId,
@@ -50,7 +50,7 @@ namespace Manuscrypt.Server.Services
             return subscriptionDTOs;
         }
 
-        public async Task<int> CreateSubscriptionAsync(SubscriptionDTO subscriptionDTO)
+        public async Task<int> CreateSubscriptionAsync(CreateSubscriptionDTO subscriptionDTO)
         {
             // Add a new Subscription to the DB.
             var subscription = new Subscription
@@ -64,6 +64,18 @@ namespace Manuscrypt.Server.Services
             await _context.SaveChangesAsync();
 
             return subscription.Id;
+        }
+
+        public async Task DeleteSubscriptionAsync(int subscriptionId)
+        {
+            var subscription = await _subscriptionRepo.GetAsync(subscriptionId);
+            if (subscription == null)
+            {
+                throw new SubscriptionDoesNotExistException(subscriptionId);
+            }
+
+            _subscriptionRepo.Delete(subscription);
+            _context.SaveChanges();
         }
     }
 }

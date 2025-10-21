@@ -1,5 +1,8 @@
 ﻿using Manuscrypt.Server.Data;
-using Manuscrypt.Server.Data.DTOs;
+using Manuscrypt.Server.Data.DTOs.Comment;
+using Manuscrypt.Server.Data.DTOs.Post;
+using Manuscrypt.Server.Data.DTOs.Subscription;
+using Manuscrypt.Server.Data.DTOs.User;
 using Manuscrypt.Server.Data.Models;
 using Manuscrypt.Server.Data.Repositories;
 using Manuscrypt.Server.Services.Exceptions;
@@ -17,7 +20,7 @@ public class UserService
         _userRepo = userRepo;
     }
     
-    public async Task<UserDTO> GetUserAsync(int userId)
+    public async Task<GetUserDTO> GetUserAsync(int userId)
     {
         var user = await _userRepo.GetAsync(userId);
 
@@ -26,7 +29,7 @@ public class UserService
             throw new UserDNEWithIdException(userId);
         }
 
-        UserDTO userDTO = new UserDTO()
+        GetUserDTO userDTO = new GetUserDTO()
         {
             Id = user.Id,
             DisplayName = user.DisplayName,
@@ -38,11 +41,11 @@ public class UserService
 
         return userDTO;
     }
-    public async Task<IEnumerable<UserDTO>> GetUsersByIdsAsync(IEnumerable<int> userIds)
+    public async Task<IEnumerable<GetUserDTO>> GetUsersByIdsAsync(IEnumerable<int> userIds)
     {
         var users = await _userRepo.GetAllAsync(userIds);
 
-        return users.Select(u => new UserDTO
+        return users.Select(u => new GetUserDTO
         {
             Id = u.Id,
             DisplayName = u.DisplayName,
@@ -51,11 +54,11 @@ public class UserService
             CreatedAt = u.CreatedAt,
         });
     }
-    public async Task<IEnumerable<CommentDTO>> GetCommentsByUserAsync(int userId)
+    public async Task<IEnumerable<GetCommentDTO>> GetCommentsByUserAsync(int userId)
     {
         var comments = await _userRepo.GetCommentsByUserAsync(userId);
 
-        var commentDTOs = comments.Select(comment => new CommentDTO
+        var commentDTOs = comments.Select(comment => new GetCommentDTO
         {
             Id = comment.Id,
             PostId = comment.PostId,
@@ -66,7 +69,7 @@ public class UserService
 
         return commentDTOs;
     }
-    public async Task<IEnumerable<PostDTO>> GetPostsForUserAsync(int userId)
+    public async Task<IEnumerable<GetPostDTO>> GetPostsForUserAsync(int userId)
     {
         var posts = await _userRepo.GetPostsForUserAsync(userId);
 
@@ -76,7 +79,7 @@ public class UserService
             throw new UserDNEWithIdException(userId);
         }
 
-        var postDTOs = posts.Select(post => new PostDTO
+        var postDTOs = posts.Select(post => new GetPostDTO
         {
             Id = post.Id,
             DisplayName = user.DisplayName,
@@ -89,11 +92,11 @@ public class UserService
 
         return postDTOs;
     }
-    public async Task<IEnumerable<SubscriptionDTO>> GetSubscribersForUserAsync(int userId)
+    public async Task<IEnumerable<GetSubscriptionDTO>> GetSubscribersForUserAsync(int userId)
     {
         var subscribers = await _userRepo.GetSubscribersForUserAsync(userId);
 
-        var subscriptionDTOs = subscribers.Select(subscription => new SubscriptionDTO
+        var subscriptionDTOs = subscribers.Select(subscription => new GetSubscriptionDTO
         {
             Id = subscription.Id,
             SubscriberId = subscription.SubscriberId,
@@ -103,11 +106,11 @@ public class UserService
 
         return subscriptionDTOs;
     }
-    public async Task<IEnumerable<SubscriptionDTO>> GetSubscriptionsForUserAsync(int userId)
+    public async Task<IEnumerable<GetSubscriptionDTO>> GetSubscriptionsForUserAsync(int userId)
     {
         var subscriptions = await _userRepo.GetSubscriptionsForUserAsync(userId);
 
-        var subscriptionDTOs = subscriptions.Select(subscription => new SubscriptionDTO
+        var subscriptionDTOs = subscriptions.Select(subscription => new GetSubscriptionDTO
         {
             Id = subscription.Id,
             SubscriberId = subscription.SubscriberId,
@@ -139,6 +142,34 @@ public class UserService
         await _context.SaveChangesAsync();
 
         return user.Id;
+    }
+
+    public async Task UpdateUserAsync(UpdateUserDTO updateUserDTO)
+    {
+        var user = await _userRepo.GetAsync(updateUserDTO.Id);
+        if (user == null)
+        {
+            throw new UserDNEWithIdException(updateUserDTO.Id);
+        }
+
+        user.DisplayName = updateUserDTO.DisplayName;
+        user.Description = updateUserDTO.Description;
+        user.Email = updateUserDTO.Email;
+        user.PhotoUrl = updateUserDTO.PhotoUrl;
+        _userRepo.Update(user);
+        _context.SaveChanges();
+    }
+
+    public async Task DeleteUserAsync(int id)
+    {
+        var user = await _userRepo.GetAsync(id);
+        if (user == null)
+        {
+            throw new UserDNEWithIdException(id);
+        }
+
+        _userRepo.Delete(user);
+        _context.SaveChanges();
     }
 
     public async Task<int> LoginAsync(LoginDTO loginDTO)

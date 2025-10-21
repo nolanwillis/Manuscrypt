@@ -1,4 +1,4 @@
-﻿namespace Manuscrypt.Server.Data.DTOs;
+﻿namespace Manuscrypt.Server.Data.DTOs.Post;
 
 public class CreatePostDTO
 {
@@ -6,6 +6,7 @@ public class CreatePostDTO
     public string Title { get; set; } = string.Empty;
     public string Description { get; set; } = string.Empty;
     public DateTime PublishedAt { get; set; } = DateTime.UtcNow;
+    public ICollection<string> Tags { get; set; } = new List<string>();
 
     public string FileUrl { get; set; } = string.Empty;
     public string FileName { get; set; } = string.Empty;

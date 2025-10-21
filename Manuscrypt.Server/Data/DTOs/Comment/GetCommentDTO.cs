@@ -1,8 +1,8 @@
-﻿namespace Manuscrypt.Server.Data.DTOs
+﻿namespace Manuscrypt.Server.Data.DTOs.Comment
 {
-    public class CommentDTO
+    public class GetCommentDTO
     {
-        public int? Id { get; set; }
+        public int Id { get; set; }
         public int PostId { get; set; }
         public int UserId { get; set; }
         public string Content { get; set; } = string.Empty;

@@ -1,4 +1,4 @@
-﻿using Manuscrypt.Server.Data.DTOs;
+﻿using Manuscrypt.Server.Data.DTOs.Comment;
 using Manuscrypt.Server.Services;
 using Manuscrypt.Server.Services.Exceptions;
 using Microsoft.AspNetCore.Mvc;
@@ -17,7 +17,7 @@ public class CommentController : ControllerBase
     }
 
     [HttpGet]
-    public async Task<ActionResult<IEnumerable<CommentDTO>>> GetAllCommentsAsync()
+    public async Task<ActionResult<IEnumerable<GetCommentDTO>>> GetAllCommentsAsync()
     {
         try
         {
@@ -30,7 +30,7 @@ public class CommentController : ControllerBase
         }
     }
     [HttpGet("{commentId}")]
-    public async Task<ActionResult<CommentDTO>> GetCommentAsync(int commentId)
+    public async Task<ActionResult<GetCommentDTO>> GetCommentAsync(int commentId)
     {
         try
         {
@@ -48,7 +48,7 @@ public class CommentController : ControllerBase
     }
     
     [HttpPost]
-    public async Task<ActionResult<int>> CreateCommentAsync([FromBody] CommentDTO commentDTO)
+    public async Task<ActionResult<int>> CreateCommentAsync([FromBody] CreateCommentDTO commentDTO)
     {
         if (commentDTO == null)
         {
@@ -59,6 +59,47 @@ public class CommentController : ControllerBase
         {
             int commentId = await _commentService.CreateCommentAsync(commentDTO);
             return CreatedAtAction(nameof(CreateCommentAsync), new { id = commentId });
+        }
+        catch (Exception ex)
+        {
+            return BadRequest(ex.Message);
+        }
+    }
+
+    [HttpPut]
+    public async Task<IActionResult> UpdateCommentAsync([FromBody] UpdateCommentDTO updateCommentDTO)
+    {
+        if (updateCommentDTO == null)
+        {
+            return BadRequest("Comment data is required.");
+        }
+
+        try
+        {
+            await _commentService.UpdateCommentAsync(updateCommentDTO);
+            return NoContent();
+        }
+        catch (CommentDoesNotExistException ex)
+        {
+            return NotFound(ex.Message);
+        }
+        catch (Exception ex)
+        {
+            return BadRequest(ex.Message);
+        }
+    }
+
+    [HttpDelete("{commentId}")]
+    public async Task<IActionResult> DeleteCommentAsync(int commentId)
+    {
+        try
+        {
+            await _commentService.DeleteCommentAsync(commentId);
+            return NoContent();
+        }
+        catch (CommentDoesNotExistException ex)
+        {
+            return NotFound(ex.Message);
         }
         catch (Exception ex)
         {

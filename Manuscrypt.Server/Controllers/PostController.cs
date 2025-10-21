@@ -1,4 +1,5 @@
-﻿using Manuscrypt.Server.Data.DTOs;
+﻿using Manuscrypt.Server.Data.DTOs.Comment;
+using Manuscrypt.Server.Data.DTOs.Post;
 using Manuscrypt.Server.Services;
 using Manuscrypt.Server.Services.Exceptions;
 using Microsoft.AspNetCore.Mvc;
@@ -17,7 +18,7 @@ public class PostController : ControllerBase
     }
 
     [HttpGet]
-    public async Task<ActionResult<IEnumerable<PostDTO>>> GetAllPostsAsync()
+    public async Task<ActionResult<IEnumerable<GetPostDTO>>> GetAllPostsAsync()
     {
         try
         {
@@ -30,7 +31,7 @@ public class PostController : ControllerBase
         }
     }  
     [HttpGet("{postId}")]
-    public async Task<ActionResult<PostDTO>> GetPostAsync(int postId)
+    public async Task<ActionResult<GetPostDTO>> GetPostAsync(int postId)
     {
         try
         {
@@ -47,7 +48,7 @@ public class PostController : ControllerBase
         }
     }
     [HttpGet("{postId}/comments")]
-    public async Task<ActionResult<IEnumerable<CommentDTO>>> GetCommentsForPostAsync(int postId)
+    public async Task<ActionResult<IEnumerable<GetCommentDTO>>> GetCommentsForPostAsync(int postId)
     {
         try
         {
@@ -72,6 +73,47 @@ public class PostController : ControllerBase
         {
             int postId = await _postService.CreatePostAsync(createPostDTO);
             return CreatedAtAction(nameof(CreatePostAsync), new { id = postId });
+        }
+        catch (Exception ex)
+        {
+            return BadRequest(ex.Message);
+        }
+    }
+
+    [HttpPut]
+    public async Task<IActionResult> UpdatePostAsync([FromBody] UpdatePostDTO updatePostDTO)
+    {
+        if (updatePostDTO == null)
+        {
+            return BadRequest("Post data is required.");
+        }
+
+        try
+        {
+            await _postService.UpdatePostAsync(updatePostDTO);
+            return NoContent();
+        }
+        catch (PostDoesNotExistException ex)
+        {
+            return NotFound(ex.Message);
+        }
+        catch (Exception ex)
+        {
+            return BadRequest(ex.Message);
+        }
+    }
+
+    [HttpDelete("{postId}")]
+    public async Task<IActionResult> DeletePostAsync(int postId)
+    {
+        try
+        {
+            await _postService.DeletePostAsync(postId);
+            return NoContent();
+        }
+        catch (PostDoesNotExistException ex)
+        {
+            return NotFound(ex.Message);
         }
         catch (Exception ex)
         {

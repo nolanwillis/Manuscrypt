@@ -8,6 +8,7 @@
         public string Description { get; set; } = string.Empty;
         public DateTime PublishedAt { get; set; } = DateTime.UtcNow;
         public int Views { get; set; }
+        public ICollection<string> Tags { get; set; } = new List<string>();
 
         public string FileUrl { get; set; } = string.Empty;
         public string FileName { get; set; } = string.Empty;          
@@ -16,33 +17,6 @@
 
         // Navigation
         public ICollection<Comment> Comments { get; set; } = new List<Comment>();
-        public ICollection<Tag> PostTags { get; set; } = new List<Tag>();
-    }
-
-    public enum Tag
-    {
-        Fiction,
-        Fantasy,
-        Syfy,
-        Nonfiction,
-        NSFW,
-        Romance,
-        Smut,
-        Chapter,
-        Page,
-        Poem,
-        Short,
-        Long,
-        Scary,
-        Dark,
-        Raunchy,
-        Sensual,
-        Funny,
-        Heartwarming,
-        Lighthearted,
-        Political,
-        Disturbing,
-        Informative
     }
 }
 

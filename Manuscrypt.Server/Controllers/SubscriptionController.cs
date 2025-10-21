@@ -1,4 +1,4 @@
-﻿using Manuscrypt.Server.Data.DTOs;
+﻿using Manuscrypt.Server.Data.DTOs.Subscription;
 using Manuscrypt.Server.Services;
 using Manuscrypt.Server.Services.Exceptions;
 using Microsoft.AspNetCore.Mvc;
@@ -17,7 +17,7 @@ public class SubscriptionController : ControllerBase
     }
 
     [HttpGet]
-    public async Task<ActionResult<IEnumerable<SubscriptionDTO>>> GetAllSubscriptionsAsync()
+    public async Task<ActionResult<IEnumerable<GetSubscriptionDTO>>> GetAllSubscriptionsAsync()
     {
         try
         {
@@ -30,7 +30,7 @@ public class SubscriptionController : ControllerBase
         }
     }
     [HttpGet("{subscriptionId}")]
-    public async Task<ActionResult<SubscriptionDTO>> GetSubscriptionAsync(int subscriptionId)
+    public async Task<ActionResult<GetSubscriptionDTO>> GetSubscriptionAsync(int subscriptionId)
     {
         try
         {
@@ -48,7 +48,7 @@ public class SubscriptionController : ControllerBase
     }
     
     [HttpPost]
-    public async Task<ActionResult<int>> CreateSubscriptionAsync([FromBody] SubscriptionDTO subscriptionDTO)
+    public async Task<ActionResult<int>> CreateSubscriptionAsync([FromBody] GetSubscriptionDTO subscriptionDTO)
     {
         if (subscriptionDTO == null)
         {
@@ -59,6 +59,24 @@ public class SubscriptionController : ControllerBase
         {
             int subscriptionId = await _subscriptionService.CreateSubscriptionAsync(subscriptionDTO);
             return CreatedAtAction(nameof(CreateSubscriptionAsync), new { id = subscriptionId });
+        }
+        catch (Exception ex)
+        {
+            return BadRequest(ex.Message);
+        }
+    }
+
+    [HttpDelete("{subscriptionId}")]
+    public async Task<IActionResult> DeleteSubscriptionAsync(int subscriptionId)
+    {
+        try
+        {
+            await _subscriptionService.DeleteSubscriptionAsync(subscriptionId);
+            return NoContent();
+        }
+        catch (SubscriptionDoesNotExistException ex)
+        {
+            return NotFound(ex.Message);
         }
         catch (Exception ex)
         {

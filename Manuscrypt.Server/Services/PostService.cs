@@ -1,5 +1,6 @@
 ﻿using Manuscrypt.Server.Data;
-using Manuscrypt.Server.Data.DTOs;
+using Manuscrypt.Server.Data.DTOs.Comment;
+using Manuscrypt.Server.Data.DTOs.Post;
 using Manuscrypt.Server.Data.Models;
 using Manuscrypt.Server.Data.Repositories;
 using Manuscrypt.Server.Services.Exceptions;
@@ -19,7 +20,7 @@ public class PostService
         _userRepo = userRepo;
     }
 
-    public async Task<PostDTO> GetPostAsync(int postId)
+    public async Task<GetPostDTO> GetPostAsync(int postId)
     {
         var post = await _postRepo.GetAsync(postId);
         if (post == null)
@@ -33,7 +34,7 @@ public class PostService
             throw new UserDNEWithIdException(post.UserId);
         }
 
-        var postDTO = new PostDTO
+        var postDTO = new GetPostDTO
         {
             Id = post.Id,
             DisplayName = user.DisplayName,
@@ -46,7 +47,7 @@ public class PostService
 
         return postDTO;
     }
-    public async Task<IEnumerable<PostDTO>> GetPostsAsync()
+    public async Task<IEnumerable<GetPostDTO>> GetPostsAsync()
     {
         var posts = await _postRepo.GetAllPostsAsync();
 
@@ -56,7 +57,7 @@ public class PostService
        
         var userDict = users.ToDictionary(u => u.Id, u => u.DisplayName);
 
-        var postDTOs = posts.Select(post => new PostDTO
+        var postDTOs = posts.Select(post => new GetPostDTO
         {
             Id = post.Id,
             DisplayName = userDict.TryGetValue(post.UserId, out var displayName) ? displayName : "Unknown",
@@ -69,11 +70,11 @@ public class PostService
 
         return postDTOs;
     }
-    public async Task<IEnumerable<CommentDTO>> GetCommentsForPostAsync(int postId)
+    public async Task<IEnumerable<GetCommentDTO>> GetCommentsForPostAsync(int postId)
     {
         var comments = await _postRepo.GetCommentsForPostAsync(postId);
 
-        var commentDTOs = comments.Select(comment => new CommentDTO
+        var commentDTOs = comments.Select(comment => new GetCommentDTO
         {
             Id = comment.Id,
             PostId = comment.PostId,
@@ -95,6 +96,7 @@ public class PostService
             Description = createPostDto.Description,
             PublishedAt = DateTime.UtcNow,
             Views = 0,
+            Tags = createPostDto.Tags,
             FileUrl = "",
             FileName = createPostDto.FileName,
             FileType = createPostDto.FileType,
@@ -105,5 +107,32 @@ public class PostService
         await _context.SaveChangesAsync();
 
         return post.Id;
+    }
+
+    public async Task UpdatePostAsync(UpdatePostDTO updatePostDTO)
+    {
+        var post = await _postRepo.GetAsync(updatePostDTO.Id);
+        if (post == null)
+        {
+            throw new PostDoesNotExistException(updatePostDTO.Id);
+        }
+
+        post.Title = updatePostDTO.Title;
+        post.Description = updatePostDTO.Description;
+        post.FileUrl = updatePostDTO.FileUrl;
+        _postRepo.Update(post);
+        _context.SaveChanges();
+    }
+
+    public async Task DeletePostAsync(int postId)
+    {
+        var post = await _postRepo.GetAsync(postId);
+        if (post == null)
+        {
+            throw new PostDoesNotExistException(postId);
+        }
+
+        _postRepo.Delete(post);
+        _context.SaveChanges();
     }
 }

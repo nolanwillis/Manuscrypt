@@ -1,4 +1,4 @@
-﻿namespace Manuscrypt.Server.Data.DTOs;
+﻿namespace Manuscrypt.Server.Data.DTOs.User;
 
 public class CreateUserDTO
 {
