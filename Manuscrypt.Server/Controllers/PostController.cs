@@ -18,7 +18,7 @@ public class PostController : ControllerBase
     }
 
     [HttpGet]
-    public async Task<ActionResult<IEnumerable<GetPostDTO>>> GetAllPostsAsync()
+    public async Task<ActionResult<IEnumerable<GetPostDTO>>> GetPostsAsync()
     {
         try
         {
@@ -71,8 +71,8 @@ public class PostController : ControllerBase
 
         try
         {
-            int postId = await _postService.CreatePostAsync(createPostDTO);
-            return CreatedAtAction(nameof(CreatePostAsync), new { id = postId });
+            int id = await _postService.CreatePostAsync(createPostDTO);
+            return CreatedAtAction(nameof(CreatePostAsync), new { id }, new { id });
         }
         catch (Exception ex)
         {

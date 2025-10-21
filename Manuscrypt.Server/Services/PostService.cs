@@ -20,7 +20,7 @@ public class PostService
         _userRepo = userRepo;
     }
 
-    public async Task<GetPostDTO> GetPostAsync(int postId)
+    public virtual async Task<GetPostDTO> GetPostAsync(int postId)
     {
         var post = await _postRepo.GetAsync(postId);
         if (post == null)
@@ -47,7 +47,7 @@ public class PostService
 
         return postDTO;
     }
-    public async Task<IEnumerable<GetPostDTO>> GetPostsAsync()
+    public virtual async Task<IEnumerable<GetPostDTO>> GetPostsAsync()
     {
         var posts = await _postRepo.GetAllPostsAsync();
 
@@ -70,7 +70,7 @@ public class PostService
 
         return postDTOs;
     }
-    public async Task<IEnumerable<GetCommentDTO>> GetCommentsForPostAsync(int postId)
+    public virtual async Task<IEnumerable<GetCommentDTO>> GetCommentsForPostAsync(int postId)
     {
         var comments = await _postRepo.GetCommentsForPostAsync(postId);
 
@@ -86,7 +86,7 @@ public class PostService
         return commentDTOs;
     }
 
-    public async Task<int> CreatePostAsync(CreatePostDTO createPostDto)
+    public virtual async Task<int> CreatePostAsync(CreatePostDTO createPostDto)
     {
         // Add a new Post to the DB.
         var post = new Post
@@ -109,7 +109,7 @@ public class PostService
         return post.Id;
     }
 
-    public async Task UpdatePostAsync(UpdatePostDTO updatePostDTO)
+    public virtual async Task UpdatePostAsync(UpdatePostDTO updatePostDTO)
     {
         var post = await _postRepo.GetAsync(updatePostDTO.Id);
         if (post == null)
@@ -124,7 +124,7 @@ public class PostService
         _context.SaveChanges();
     }
 
-    public async Task DeletePostAsync(int postId)
+    public virtual async Task DeletePostAsync(int postId)
     {
         var post = await _postRepo.GetAsync(postId);
         if (post == null)

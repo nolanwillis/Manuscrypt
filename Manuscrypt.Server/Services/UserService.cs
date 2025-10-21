@@ -20,7 +20,7 @@ public class UserService
         _userRepo = userRepo;
     }
     
-    public async Task<GetUserDTO> GetUserAsync(int userId)
+    public virtual async Task<GetUserDTO> GetUserAsync(int userId)
     {
         var user = await _userRepo.GetAsync(userId);
 
@@ -41,7 +41,7 @@ public class UserService
 
         return userDTO;
     }
-    public async Task<IEnumerable<GetUserDTO>> GetUsersByIdsAsync(IEnumerable<int> userIds)
+    public virtual async Task<IEnumerable<GetUserDTO>> GetUsersByIdsAsync(IEnumerable<int> userIds)
     {
         var users = await _userRepo.GetAllAsync(userIds);
 
@@ -54,7 +54,7 @@ public class UserService
             CreatedAt = u.CreatedAt,
         });
     }
-    public async Task<IEnumerable<GetCommentDTO>> GetCommentsByUserAsync(int userId)
+    public virtual async Task<IEnumerable<GetCommentDTO>> GetCommentsByUserAsync(int userId)
     {
         var comments = await _userRepo.GetCommentsByUserAsync(userId);
 
@@ -69,7 +69,7 @@ public class UserService
 
         return commentDTOs;
     }
-    public async Task<IEnumerable<GetPostDTO>> GetPostsForUserAsync(int userId)
+    public virtual async Task<IEnumerable<GetPostDTO>> GetPostsForUserAsync(int userId)
     {
         var posts = await _userRepo.GetPostsForUserAsync(userId);
 
@@ -92,7 +92,7 @@ public class UserService
 
         return postDTOs;
     }
-    public async Task<IEnumerable<GetSubscriptionDTO>> GetSubscribersForUserAsync(int userId)
+    public virtual async Task<IEnumerable<GetSubscriptionDTO>> GetSubscribersForUserAsync(int userId)
     {
         var subscribers = await _userRepo.GetSubscribersForUserAsync(userId);
 
@@ -106,7 +106,7 @@ public class UserService
 
         return subscriptionDTOs;
     }
-    public async Task<IEnumerable<GetSubscriptionDTO>> GetSubscriptionsForUserAsync(int userId)
+    public virtual async Task<IEnumerable<GetSubscriptionDTO>> GetSubscriptionsForUserAsync(int userId)
     {
         var subscriptions = await _userRepo.GetSubscriptionsForUserAsync(userId);
 
@@ -121,7 +121,7 @@ public class UserService
         return subscriptionDTOs;
     }
 
-    public async Task<int> CreateUserAsync(CreateUserDTO createUserDTO)
+    public virtual async Task<int> CreateUserAsync(CreateUserDTO createUserDTO)
     {
         var existingUser = await _userRepo.GetByEmailAsync(createUserDTO.Email);
 
@@ -144,7 +144,7 @@ public class UserService
         return user.Id;
     }
 
-    public async Task UpdateUserAsync(UpdateUserDTO updateUserDTO)
+    public virtual async Task UpdateUserAsync(UpdateUserDTO updateUserDTO)
     {
         var user = await _userRepo.GetAsync(updateUserDTO.Id);
         if (user == null)
@@ -160,7 +160,7 @@ public class UserService
         _context.SaveChanges();
     }
 
-    public async Task DeleteUserAsync(int id)
+    public virtual async Task DeleteUserAsync(int id)
     {
         var user = await _userRepo.GetAsync(id);
         if (user == null)
@@ -172,7 +172,7 @@ public class UserService
         _context.SaveChanges();
     }
 
-    public async Task<int> LoginAsync(LoginDTO loginDTO)
+    public virtual async Task<int> LoginAsync(LoginDTO loginDTO)
     {
         var user = await _userRepo.GetByEmailAsync(loginDTO.Email);
         

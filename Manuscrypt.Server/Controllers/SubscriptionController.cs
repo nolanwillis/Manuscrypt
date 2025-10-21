@@ -17,7 +17,7 @@ public class SubscriptionController : ControllerBase
     }
 
     [HttpGet]
-    public async Task<ActionResult<IEnumerable<GetSubscriptionDTO>>> GetAllSubscriptionsAsync()
+    public async Task<ActionResult<IEnumerable<GetSubscriptionDTO>>> GetSubscriptionsAsync()
     {
         try
         {
@@ -48,17 +48,17 @@ public class SubscriptionController : ControllerBase
     }
     
     [HttpPost]
-    public async Task<ActionResult<int>> CreateSubscriptionAsync([FromBody] GetSubscriptionDTO subscriptionDTO)
+    public async Task<ActionResult<int>> CreateSubscriptionAsync([FromBody] CreateSubscriptionDTO createSubscriptionDTO)
     {
-        if (subscriptionDTO == null)
+        if (createSubscriptionDTO == null)
         {
             return BadRequest("Post data is required.");
         }
 
         try
         {
-            int subscriptionId = await _subscriptionService.CreateSubscriptionAsync(subscriptionDTO);
-            return CreatedAtAction(nameof(CreateSubscriptionAsync), new { id = subscriptionId });
+            int id = await _subscriptionService.CreateSubscriptionAsync(createSubscriptionDTO);
+            return CreatedAtAction(nameof(CreateSubscriptionAsync), new { id }, new { id });
         }
         catch (Exception ex)
         {

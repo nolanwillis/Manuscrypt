@@ -17,7 +17,7 @@ namespace Manuscrypt.Server.Services
             _subscriptionRepo = subscriptionRepo;
         }
 
-        public async Task<GetSubscriptionDTO> GetSubscriptionAsync(int subscriptionId)
+        public virtual async Task<GetSubscriptionDTO> GetSubscriptionAsync(int subscriptionId)
         {
             var subscription = await _subscriptionRepo.GetAsync(subscriptionId);
             if (subscription == null)
@@ -35,7 +35,7 @@ namespace Manuscrypt.Server.Services
 
             return subscriptionDTO;
         }
-        public async Task<IEnumerable<GetSubscriptionDTO>> GetSubscriptionsAsync()
+        public virtual async Task<IEnumerable<GetSubscriptionDTO>> GetSubscriptionsAsync()
         {
             var subscriptions = await _subscriptionRepo.GetAllAsync();
 
@@ -50,7 +50,7 @@ namespace Manuscrypt.Server.Services
             return subscriptionDTOs;
         }
 
-        public async Task<int> CreateSubscriptionAsync(CreateSubscriptionDTO subscriptionDTO)
+        public virtual async Task<int> CreateSubscriptionAsync(CreateSubscriptionDTO subscriptionDTO)
         {
             // Add a new Subscription to the DB.
             var subscription = new Subscription
@@ -66,7 +66,7 @@ namespace Manuscrypt.Server.Services
             return subscription.Id;
         }
 
-        public async Task DeleteSubscriptionAsync(int subscriptionId)
+        public virtual async Task DeleteSubscriptionAsync(int subscriptionId)
         {
             var subscription = await _subscriptionRepo.GetAsync(subscriptionId);
             if (subscription == null)

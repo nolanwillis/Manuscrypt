@@ -17,7 +17,7 @@ public class CommentController : ControllerBase
     }
 
     [HttpGet]
-    public async Task<ActionResult<IEnumerable<GetCommentDTO>>> GetAllCommentsAsync()
+    public async Task<ActionResult<IEnumerable<GetCommentDTO>>> GetCommentsAsync()
     {
         try
         {
@@ -48,17 +48,17 @@ public class CommentController : ControllerBase
     }
     
     [HttpPost]
-    public async Task<ActionResult<int>> CreateCommentAsync([FromBody] CreateCommentDTO commentDTO)
+    public async Task<ActionResult<int>> CreateCommentAsync([FromBody] CreateCommentDTO createCommentDTO)
     {
-        if (commentDTO == null)
+        if (createCommentDTO == null)
         {
             return BadRequest("Post data is required.");
         }
 
         try
         {
-            int commentId = await _commentService.CreateCommentAsync(commentDTO);
-            return CreatedAtAction(nameof(CreateCommentAsync), new { id = commentId });
+            int id = await _commentService.CreateCommentAsync(createCommentDTO);
+            return CreatedAtAction(nameof(CreateCommentAsync), new { id }, new { id });
         }
         catch (Exception ex)
         {

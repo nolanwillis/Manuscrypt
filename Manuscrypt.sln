@@ -7,6 +7,8 @@ Project("{54A90642-561A-4BB1-A94E-469ADEE60C69}") = "manuscrypt.client", "manusc
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Manuscrypt.Server", "Manuscrypt.Server\Manuscrypt.Server.csproj", "{A4AB024B-C876-43C1-A461-E39D3A02706F}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Manuscrypt.Server.Tests", "Manuscrypt.Server.Tests\Manuscrypt.Server.Tests.csproj", "{086F0E16-8D22-7737-9259-BA11FA209ECD}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -23,6 +25,10 @@ Global
 		{A4AB024B-C876-43C1-A461-E39D3A02706F}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{A4AB024B-C876-43C1-A461-E39D3A02706F}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{A4AB024B-C876-43C1-A461-E39D3A02706F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{086F0E16-8D22-7737-9259-BA11FA209ECD}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{086F0E16-8D22-7737-9259-BA11FA209ECD}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{086F0E16-8D22-7737-9259-BA11FA209ECD}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{086F0E16-8D22-7737-9259-BA11FA209ECD}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

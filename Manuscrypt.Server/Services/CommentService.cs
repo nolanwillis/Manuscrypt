@@ -17,7 +17,7 @@ namespace Manuscrypt.Server.Services
             _commentRepo = commentRepo;
         }
 
-        public async Task<GetCommentDTO> GetCommentAsync(int commentId)
+        public virtual async Task<GetCommentDTO> GetCommentAsync(int commentId)
         {
             var comment = await _commentRepo.GetAsync(commentId);
             if (comment == null)
@@ -36,7 +36,7 @@ namespace Manuscrypt.Server.Services
 
             return commentDTO;
         }
-        public async Task<IEnumerable<GetCommentDTO>> GetCommentsAsync()
+        public virtual async Task<IEnumerable<GetCommentDTO>> GetCommentsAsync()
         {
             var comments = await _commentRepo.GetAllAsync();
 
@@ -52,7 +52,7 @@ namespace Manuscrypt.Server.Services
             return commentDTOs;
         }
 
-        public async Task<int> CreateCommentAsync(CreateCommentDTO createCommentDTO)
+        public virtual async Task<int> CreateCommentAsync(CreateCommentDTO createCommentDTO)
         {
             // Add a new Comment to the DB.
             var comment = new Comment
@@ -69,7 +69,7 @@ namespace Manuscrypt.Server.Services
             return comment.Id;
         }
 
-        public async Task UpdateCommentAsync(UpdateCommentDTO updateCommentDTO)
+        public virtual async Task UpdateCommentAsync(UpdateCommentDTO updateCommentDTO)
         {
             var comment = await _commentRepo.GetAsync(updateCommentDTO.Id);
             if (comment == null)
@@ -82,7 +82,7 @@ namespace Manuscrypt.Server.Services
             _context.SaveChanges();
         }
 
-        public async Task DeleteCommentAsync(int commentId)
+        public virtual async Task DeleteCommentAsync(int commentId)
         {
             var comment = await _commentRepo.GetAsync(commentId);
             if (comment == null)

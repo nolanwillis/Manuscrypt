@@ -99,8 +99,8 @@ public class UserController : ControllerBase
 
         try
         {
-            int userId = await _userService.CreateUserAsync(createUserDTO);
-            return CreatedAtAction(nameof(CreateUserAsync), new { id = userId });
+            int id = await _userService.CreateUserAsync(createUserDTO);
+            return CreatedAtAction(nameof(CreateUserAsync), new { id }, new { id });
         }
         catch (Exception ex)
         {
