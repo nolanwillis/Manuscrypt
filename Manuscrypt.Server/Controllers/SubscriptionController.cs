@@ -15,20 +15,7 @@ public class SubscriptionController : ControllerBase
     {
         _subscriptionService = subscriptionService;
     }
-
-    [HttpGet]
-    public async Task<ActionResult<IEnumerable<GetSubscriptionDTO>>> GetSubscriptionsAsync()
-    {
-        try
-        {
-            var subscriptionDTOs = await _subscriptionService.GetSubscriptionsAsync();
-            return Ok(subscriptionDTOs);
-        }
-        catch(Exception ex) 
-        {
-            return BadRequest(ex.Message);
-        }
-    }
+ 
     [HttpGet("{subscriptionId}")]
     public async Task<ActionResult<GetSubscriptionDTO>> GetSubscriptionAsync(int subscriptionId)
     {

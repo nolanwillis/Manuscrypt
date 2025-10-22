@@ -8,38 +8,11 @@ using Moq;
 namespace Manuscrypt.Server.Tests.Controllers;
 
 public class SubscriptionControllerTests
-{
-    [Fact]
-    public async Task GetSubscriptionsAsync_ReturnsOk_WithSubscriptions()
-    {
-        var mockService = new Mock<SubscriptionService>(null, null);
-        var expected = new List<GetSubscriptionDTO> { new GetSubscriptionDTO { Id = 1 } };
-        mockService.Setup(s => s.GetSubscriptionsAsync()).ReturnsAsync(expected);
-        var controller = new SubscriptionController(mockService.Object);
-
-        var result = await controller.GetSubscriptionsAsync();
-
-        var okResult = Assert.IsType<OkObjectResult>(result.Result);
-        var value = Assert.IsAssignableFrom<IEnumerable<GetSubscriptionDTO>>(okResult.Value);
-        Assert.Single(value);
-    }
-
-    [Fact]
-    public async Task GetSubscriptionsAsync_ReturnsBadRequest_OnException()
-    {
-        var mockService = new Mock<SubscriptionService>(null, null);
-        mockService.Setup(s => s.GetSubscriptionsAsync()).ThrowsAsync(new Exception());
-        var controller = new SubscriptionController(mockService.Object);
-
-        var result = await controller.GetSubscriptionsAsync();
-
-        Assert.IsType<BadRequestObjectResult>(result.Result);
-    }
-
+{ 
     [Fact]
     public async Task GetSubscriptionAsync_ReturnsOk_WhenFound()
     {
-        var mockService = new Mock<SubscriptionService>(null, null);
+        var mockService = new Mock<SubscriptionService>(null);
         var expected = new GetSubscriptionDTO { Id = 1 };
         mockService.Setup(s => s.GetSubscriptionAsync(1)).ReturnsAsync(expected);
         var controller = new SubscriptionController(mockService.Object);
@@ -54,7 +27,7 @@ public class SubscriptionControllerTests
     [Fact]
     public async Task GetSubscriptionAsync_ReturnsNotFound_WhenNotFound()
     {
-        var mockService = new Mock<SubscriptionService>(null, null);
+        var mockService = new Mock<SubscriptionService>(null);
         mockService.Setup(s => s.GetSubscriptionAsync(1)).ThrowsAsync(new SubscriptionDoesNotExistException(1));
         var controller = new SubscriptionController(mockService.Object);
 
@@ -66,7 +39,7 @@ public class SubscriptionControllerTests
     [Fact]
     public async Task GetSubscriptionAsync_ReturnsBadRequest_OnException()
     {
-        var mockService = new Mock<SubscriptionService>(null, null);
+        var mockService = new Mock<SubscriptionService>(null);
         mockService.Setup(s => s.GetSubscriptionAsync(1)).ThrowsAsync(new Exception());
         var controller = new SubscriptionController(mockService.Object);
 
@@ -78,7 +51,7 @@ public class SubscriptionControllerTests
     [Fact]
     public async Task CreateSubscriptionAsync_ReturnsCreated_WhenValid()
     {
-        var mockService = new Mock<SubscriptionService>(null, null);
+        var mockService = new Mock<SubscriptionService>(null);
         var createDto = new CreateSubscriptionDTO { SubscriberId = 1 };
         mockService.Setup(s => s.CreateSubscriptionAsync(createDto)).ReturnsAsync(42);
         var controller = new SubscriptionController(mockService.Object);
@@ -92,7 +65,7 @@ public class SubscriptionControllerTests
     [Fact]
     public async Task CreateSubscriptionAsync_ReturnsBadRequest_WhenNull()
     {
-        var mockService = new Mock<SubscriptionService>(null, null);
+        var mockService = new Mock<SubscriptionService>(null);
         var controller = new SubscriptionController(mockService.Object);
 
         var result = await controller.CreateSubscriptionAsync(null);
@@ -103,7 +76,7 @@ public class SubscriptionControllerTests
     [Fact]
     public async Task CreateSubscriptionAsync_ReturnsBadRequest_OnException()
     {
-        var mockService = new Mock<SubscriptionService>(null, null);
+        var mockService = new Mock<SubscriptionService>(null);
         var createDto = new CreateSubscriptionDTO { SubscriberId = 1 };
         mockService.Setup(s => s.CreateSubscriptionAsync(createDto)).ThrowsAsync(new Exception());
         var controller = new SubscriptionController(mockService.Object);
@@ -116,7 +89,7 @@ public class SubscriptionControllerTests
     [Fact]
     public async Task DeleteSubscriptionAsync_ReturnsNoContent_WhenValid()
     {
-        var mockService = new Mock<SubscriptionService>(null, null);
+        var mockService = new Mock<SubscriptionService>(null);
         mockService.Setup(s => s.DeleteSubscriptionAsync(1)).Returns(Task.CompletedTask);
         var controller = new SubscriptionController(mockService.Object);
 
@@ -128,7 +101,7 @@ public class SubscriptionControllerTests
     [Fact]
     public async Task DeleteSubscriptionAsync_ReturnsNotFound_WhenNotFound()
     {
-        var mockService = new Mock<SubscriptionService>(null, null);
+        var mockService = new Mock<SubscriptionService>(null);
         mockService.Setup(s => s.DeleteSubscriptionAsync(1)).ThrowsAsync(new SubscriptionDoesNotExistException(1));
         var controller = new SubscriptionController(mockService.Object);
 
@@ -140,7 +113,7 @@ public class SubscriptionControllerTests
     [Fact]
     public async Task DeleteSubscriptionAsync_ReturnsBadRequest_OnException()
     {
-        var mockService = new Mock<SubscriptionService>(null, null);
+        var mockService = new Mock<SubscriptionService>(null);
         mockService.Setup(s => s.DeleteSubscriptionAsync(1)).ThrowsAsync(new Exception());
         var controller = new SubscriptionController(mockService.Object);
 

@@ -8,12 +8,10 @@ namespace Manuscrypt.Server.Services
 {
     public class CommentService
     {
-        private readonly ManuscryptContext _context;
         private readonly CommentRepo _commentRepo;
 
-        public CommentService(ManuscryptContext context, CommentRepo commentRepo)
+        public CommentService(CommentRepo commentRepo)
         {
-            _context = context;
             _commentRepo = commentRepo;
         }
 
@@ -35,22 +33,7 @@ namespace Manuscrypt.Server.Services
             };
 
             return commentDTO;
-        }
-        public virtual async Task<IEnumerable<GetCommentDTO>> GetCommentsAsync()
-        {
-            var comments = await _commentRepo.GetAllAsync();
-
-            var commentDTOs = comments.Select(comment => new GetCommentDTO
-            {
-                Id = comment.Id,
-                PostId = comment.PostId,
-                UserId = comment.UserId,
-                Content = comment.Content,
-                CreatedAt = comment.CreatedAt
-            }).ToList();
-
-            return commentDTOs;
-        }
+        } 
 
         public virtual async Task<int> CreateCommentAsync(CreateCommentDTO createCommentDTO)
         {
@@ -64,7 +47,6 @@ namespace Manuscrypt.Server.Services
             };
 
             await _commentRepo.AddAsync(comment);
-            await _context.SaveChangesAsync();
 
             return comment.Id;
         }
@@ -78,20 +60,10 @@ namespace Manuscrypt.Server.Services
             }
 
             comment.Content = updateCommentDTO.Content;
-            _commentRepo.Update(comment);
-            _context.SaveChanges();
+
+            await _commentRepo.UpdateAsync(comment);
         }
 
-        public virtual async Task DeleteCommentAsync(int commentId)
-        {
-            var comment = await _commentRepo.GetAsync(commentId);
-            if (comment == null)
-            {
-                throw new CommentDoesNotExistException(commentId);
-            }
-
-            _commentRepo.Delete(comment);
-            _context.SaveChanges();
-        }
+        public virtual async Task DeleteCommentAsync(int commentId) => await _commentRepo.DeleteAsync(commentId);
     }
 }

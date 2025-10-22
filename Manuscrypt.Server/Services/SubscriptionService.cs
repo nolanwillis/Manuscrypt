@@ -1,5 +1,4 @@
-﻿using Manuscrypt.Server.Data;
-using Manuscrypt.Server.Data.DTOs.Subscription;
+﻿using Manuscrypt.Server.Data.DTOs.Subscription;
 using Manuscrypt.Server.Data.Models;
 using Manuscrypt.Server.Data.Repositories;
 using Manuscrypt.Server.Services.Exceptions;
@@ -8,12 +7,10 @@ namespace Manuscrypt.Server.Services
 {
     public class SubscriptionService
     {
-        private readonly ManuscryptContext _context;
         private readonly SubscriptionRepo _subscriptionRepo;
 
-        public SubscriptionService(ManuscryptContext context, SubscriptionRepo subscriptionRepo)
+        public SubscriptionService(SubscriptionRepo subscriptionRepo)
         {
-            _context = context;
             _subscriptionRepo = subscriptionRepo;
         }
 
@@ -34,21 +31,7 @@ namespace Manuscrypt.Server.Services
             };
 
             return subscriptionDTO;
-        }
-        public virtual async Task<IEnumerable<GetSubscriptionDTO>> GetSubscriptionsAsync()
-        {
-            var subscriptions = await _subscriptionRepo.GetAllAsync();
-
-            var subscriptionDTOs = subscriptions.Select(subscription => new GetSubscriptionDTO
-            {
-                Id = subscription.Id,
-                SubscriberId = subscription.SubscriberId,
-                SubscribedToId = subscription.SubscribedToId,
-                CreatedAt = subscription.CreatedAt
-            }).ToList();
-
-            return subscriptionDTOs;
-        }
+        } 
 
         public virtual async Task<int> CreateSubscriptionAsync(CreateSubscriptionDTO subscriptionDTO)
         {
@@ -61,21 +44,10 @@ namespace Manuscrypt.Server.Services
             };
 
             await _subscriptionRepo.AddAsync(subscription);
-            await _context.SaveChangesAsync();
 
             return subscription.Id;
         }
 
-        public virtual async Task DeleteSubscriptionAsync(int subscriptionId)
-        {
-            var subscription = await _subscriptionRepo.GetAsync(subscriptionId);
-            if (subscription == null)
-            {
-                throw new SubscriptionDoesNotExistException(subscriptionId);
-            }
-
-            _subscriptionRepo.Delete(subscription);
-            _context.SaveChanges();
-        }
+        public virtual async Task DeleteSubscriptionAsync(int subscriptionId) => await _subscriptionRepo.DeleteAsync(subscriptionId);
     }
 }

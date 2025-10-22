@@ -8,44 +8,13 @@ using Moq;
 namespace Manuscrypt.Server.Tests.Controllers;
 
 public class CommentControllerTests
-{
-    [Fact]
-    public async Task GetAllCommentsAsync_ReturnsOk_WithComments()
-    {
-        var mockService = new Mock<CommentService>(null, null);
-        var expectedComments = new List<GetCommentDTO>
-        {
-            new GetCommentDTO { Id = 1 }
-        };
-        mockService.Setup(s => s.GetCommentsAsync())
-                   .ReturnsAsync(expectedComments);
-        var controller = new CommentController(mockService.Object);
-
-        var result = await controller.GetCommentsAsync();
-
-        var okResult = Assert.IsType<OkObjectResult>(result.Result);
-        var returnValue = Assert.IsAssignableFrom<IEnumerable<GetCommentDTO>>(okResult.Value);
-        Assert.Single(returnValue);
-    }
-
-    [Fact]
-    public async Task GetAllCommentsAsync_ReturnsBadRequest_OnException()
-    {
-        var mockService = new Mock<CommentService>(null, null);
-        mockService.Setup(s => s.GetCommentsAsync())
-                   .ThrowsAsync(new Exception("Service error"));
-        var controller = new CommentController(mockService.Object);
-
-        var result = await controller.GetCommentsAsync();
-
-        Assert.IsType<BadRequestObjectResult>(result.Result);
-    }
-
+{ 
     [Fact]
     public async Task GetCommentAsync_ReturnsOk_WhenFound()
     {
-        var mockService = new Mock<CommentService>(null, null);
-        var expectedComment = new GetCommentDTO { Id = 1, Content = "Test comment" };
+        var mockService = new Mock<CommentService>(null);
+        var creationTime = DateTime.UtcNow;
+        var expectedComment = new GetCommentDTO { Id = 1, PostId = 2, UserId = 3, Content = "Content", CreatedAt = creationTime};
         mockService.Setup(s => s.GetCommentAsync(1))
                    .ReturnsAsync(expectedComment);
         var controller = new CommentController(mockService.Object);
@@ -55,12 +24,16 @@ public class CommentControllerTests
         var okResult = Assert.IsType<OkObjectResult>(result.Result);
         var returnValue = Assert.IsType<GetCommentDTO>(okResult.Value);
         Assert.Equal(1, returnValue.Id);
+        Assert.Equal(2, returnValue.PostId);
+        Assert.Equal(3, returnValue.UserId);
+        Assert.Equal("Content", returnValue.Content);
+        Assert.Equal(creationTime, returnValue.CreatedAt);
     }
 
     [Fact]
     public async Task GetCommentAsync_ReturnsNotFound_WhenNotFound()
     {
-        var mockService = new Mock<CommentService>(null, null);
+        var mockService = new Mock<CommentService>(null);
         mockService.Setup(s => s.GetCommentAsync(1))
                    .ThrowsAsync(new CommentDoesNotExistException(1));
         var controller = new CommentController(mockService.Object);
@@ -73,7 +46,7 @@ public class CommentControllerTests
     [Fact]
     public async Task GetCommentAsync_ReturnsBadRequest_OnException()
     {
-        var mockService = new Mock<CommentService>(null, null);
+        var mockService = new Mock<CommentService>(null);
         mockService.Setup(s => s.GetCommentAsync(1))
                    .ThrowsAsync(new Exception("Service error"));
         var controller = new CommentController(mockService.Object);
@@ -86,8 +59,8 @@ public class CommentControllerTests
     [Fact]
     public async Task CreateCommentAsync_ReturnsCreated_WhenValid()
     {
-        var mockService = new Mock<CommentService>(null, null);
-        var createDto = new CreateCommentDTO { Content = "New comment" };
+        var mockService = new Mock<CommentService>(null);
+        var createDto = new CreateCommentDTO { PostId = 2, UserId = 3, Content = "Content", CreatedAt = DateTime.UtcNow };
         mockService.Setup(s => s.CreateCommentAsync(createDto))
                    .ReturnsAsync(42);
         var controller = new CommentController(mockService.Object);
@@ -101,7 +74,7 @@ public class CommentControllerTests
     [Fact]
     public async Task CreateCommentAsync_ReturnsBadRequest_WhenNull()
     {
-        var mockService = new Mock<CommentService>(null, null);
+        var mockService = new Mock<CommentService>(null);
         var controller = new CommentController(mockService.Object);
 
         var result = await controller.CreateCommentAsync(null);
@@ -112,8 +85,8 @@ public class CommentControllerTests
     [Fact]
     public async Task CreateCommentAsync_ReturnsBadRequest_OnException()
     {
-        var mockService = new Mock<CommentService>(null, null);
-        var createDto = new CreateCommentDTO { Content = "New comment" };
+        var mockService = new Mock<CommentService>(null);
+        var createDto = new CreateCommentDTO { PostId = 2, UserId = 3, Content = "Content", CreatedAt = DateTime.UtcNow };
         mockService.Setup(s => s.CreateCommentAsync(createDto))
                    .ThrowsAsync(new Exception("Service error"));
         var controller = new CommentController(mockService.Object);
@@ -126,7 +99,7 @@ public class CommentControllerTests
     [Fact]
     public async Task UpdateCommentAsync_ReturnsNoContent_WhenValid()
     {
-        var mockService = new Mock<CommentService>(null, null);
+        var mockService = new Mock<CommentService>(null);
         var updateDto = new UpdateCommentDTO { Id = 1, Content = "Updated" };
         mockService.Setup(s => s.UpdateCommentAsync(updateDto))
                    .Returns(Task.CompletedTask);
@@ -140,7 +113,7 @@ public class CommentControllerTests
     [Fact]
     public async Task UpdateCommentAsync_ReturnsBadRequest_WhenNull()
     {
-        var mockService = new Mock<CommentService>(null, null);
+        var mockService = new Mock<CommentService>(null);
         var controller = new CommentController(mockService.Object);
 
         var result = await controller.UpdateCommentAsync(null);
@@ -151,7 +124,7 @@ public class CommentControllerTests
     [Fact]
     public async Task UpdateCommentAsync_ReturnsNotFound_WhenNotFound()
     {
-        var mockService = new Mock<CommentService>(null, null);
+        var mockService = new Mock<CommentService>(null);
         var updateDto = new UpdateCommentDTO { Id = 1, Content = "Updated" };
         mockService.Setup(s => s.UpdateCommentAsync(updateDto))
                    .ThrowsAsync(new CommentDoesNotExistException(1));
@@ -165,7 +138,7 @@ public class CommentControllerTests
     [Fact]
     public async Task UpdateCommentAsync_ReturnsBadRequest_OnException()
     {
-        var mockService = new Mock<CommentService>(null, null);
+        var mockService = new Mock<CommentService>(null);
         var updateDto = new UpdateCommentDTO { Id = 1, Content = "Updated" };
         mockService.Setup(s => s.UpdateCommentAsync(updateDto))
                    .ThrowsAsync(new Exception("Service error"));
@@ -179,7 +152,7 @@ public class CommentControllerTests
     [Fact]
     public async Task DeleteCommentAsync_ReturnsNoContent_WhenValid()
     {
-        var mockService = new Mock<CommentService>(null, null);
+        var mockService = new Mock<CommentService>(null);
         mockService.Setup(s => s.DeleteCommentAsync(1))
                    .Returns(Task.CompletedTask);
         var controller = new CommentController(mockService.Object);
@@ -192,7 +165,7 @@ public class CommentControllerTests
     [Fact]
     public async Task DeleteCommentAsync_ReturnsNotFound_WhenNotFound()
     {
-        var mockService = new Mock<CommentService>(null, null);
+        var mockService = new Mock<CommentService>(null);
         mockService.Setup(s => s.DeleteCommentAsync(1))
                    .ThrowsAsync(new CommentDoesNotExistException(1));
         var controller = new CommentController(mockService.Object);
@@ -205,7 +178,7 @@ public class CommentControllerTests
     [Fact]
     public async Task DeleteCommentAsync_ReturnsBadRequest_OnException()
     {
-        var mockService = new Mock<CommentService>(null, null);
+        var mockService = new Mock<CommentService>(null);
         mockService.Setup(s => s.DeleteCommentAsync(1))
                    .ThrowsAsync(new Exception("Service error"));
         var controller = new CommentController(mockService.Object);

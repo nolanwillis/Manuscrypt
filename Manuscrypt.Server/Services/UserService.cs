@@ -1,5 +1,4 @@
-﻿using Manuscrypt.Server.Data;
-using Manuscrypt.Server.Data.DTOs.Comment;
+﻿using Manuscrypt.Server.Data.DTOs.Comment;
 using Manuscrypt.Server.Data.DTOs.Post;
 using Manuscrypt.Server.Data.DTOs.Subscription;
 using Manuscrypt.Server.Data.DTOs.User;
@@ -11,12 +10,10 @@ namespace Manuscrypt.Server.Services;
 
 public class UserService
 {
-    private readonly ManuscryptContext _context;
     private readonly UserRepo _userRepo;
 
-    public UserService(ManuscryptContext context, UserRepo userRepo)
+    public UserService(UserRepo userRepo)
     {
-        _context = context;
         _userRepo = userRepo;
     }
     
@@ -138,8 +135,8 @@ public class UserService
             PasswordHash = BCrypt.Net.BCrypt.HashPassword(createUserDTO.Password),
             CreatedAt = DateTime.UtcNow
         };
+        
         await _userRepo.AddAsync(user);
-        await _context.SaveChangesAsync();
 
         return user.Id;
     }
@@ -156,21 +153,11 @@ public class UserService
         user.Description = updateUserDTO.Description;
         user.Email = updateUserDTO.Email;
         user.PhotoUrl = updateUserDTO.PhotoUrl;
-        _userRepo.Update(user);
-        _context.SaveChanges();
+    
+        await _userRepo.UpdateAsync(user);
     }
 
-    public virtual async Task DeleteUserAsync(int id)
-    {
-        var user = await _userRepo.GetAsync(id);
-        if (user == null)
-        {
-            throw new UserDNEWithIdException(id);
-        }
-
-        _userRepo.Delete(user);
-        _context.SaveChanges();
-    }
+    public virtual async Task DeleteUserAsync(int userId) => await _userRepo.DeleteAsync(userId);
 
     public virtual async Task<int> LoginAsync(LoginDTO loginDTO)
     {

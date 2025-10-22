@@ -15,20 +15,7 @@ public class CommentController : ControllerBase
     {
         _commentService = commentService;
     }
-
-    [HttpGet]
-    public async Task<ActionResult<IEnumerable<GetCommentDTO>>> GetCommentsAsync()
-    {
-        try
-        {
-            var commentDTOs = await _commentService.GetCommentsAsync();
-            return Ok(commentDTOs);
-        }
-        catch (Exception ex) 
-        {
-            return BadRequest(ex.Message);
-        }
-    }
+ 
     [HttpGet("{commentId}")]
     public async Task<ActionResult<GetCommentDTO>> GetCommentAsync(int commentId)
     {

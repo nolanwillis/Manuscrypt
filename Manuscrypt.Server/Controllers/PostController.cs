@@ -16,20 +16,7 @@ public class PostController : ControllerBase
     {
         _postService = postService;
     }
-
-    [HttpGet]
-    public async Task<ActionResult<IEnumerable<GetPostDTO>>> GetPostsAsync()
-    {
-        try
-        {
-            var postDTOs = await _postService.GetPostsAsync();
-            return Ok(postDTOs);
-        }
-        catch (Exception ex)
-        {
-            return BadRequest(ex.Message);
-        }
-    }  
+ 
     [HttpGet("{postId}")]
     public async Task<ActionResult<GetPostDTO>> GetPostAsync(int postId)
     {

@@ -1,5 +1,7 @@
 ﻿using Manuscrypt.Server.Data.Models;
+using Manuscrypt.Server.Services.Exceptions;
 using Microsoft.EntityFrameworkCore;
+using System.ComponentModel.Design;
 
 namespace Manuscrypt.Server.Data.Repositories;
 
@@ -12,10 +14,28 @@ public class CommentRepo : IRepo<Comment>
         _dbContext = dbContext;
     }
 
-    public async Task<Comment?> GetAsync(int id) => await _dbContext.Comments.FindAsync(id);
-    public async Task AddAsync(Comment entity) => await _dbContext.AddAsync(entity);
-    public void Update(Comment entity) => _dbContext.Update(entity);
-    public void Delete(Comment entity) => _dbContext.Remove(entity);
+    public virtual async Task<Comment?> GetAsync(int id) => await _dbContext.Comments.FindAsync(id);
+    public virtual async Task AddAsync(Comment entity) 
+    {
+        await _dbContext.AddAsync(entity);
+        await _dbContext.SaveChangesAsync();
+    }
+    public virtual async Task UpdateAsync(Comment entity) 
+    {
+        _dbContext.Update(entity);
+        await _dbContext.SaveChangesAsync();
+    } 
+    public virtual async Task DeleteAsync(int id)
+    {
+        var entity = await _dbContext.Comments.FindAsync(id);
+        if (entity == null) 
+        { 
+            throw new CommentDoesNotExistException(id);
+        }
 
-    public async Task<IEnumerable<Comment>> GetAllAsync() => await _dbContext.Comments.ToListAsync();
+        _dbContext.Remove(entity);
+        await _dbContext.SaveChangesAsync();
+    }  
+
+    public virtual async Task<IEnumerable<Comment>> GetAllAsync() => await _dbContext.Comments.ToListAsync();
 }

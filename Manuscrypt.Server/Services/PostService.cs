@@ -1,5 +1,4 @@
-﻿using Manuscrypt.Server.Data;
-using Manuscrypt.Server.Data.DTOs.Comment;
+﻿using Manuscrypt.Server.Data.DTOs.Comment;
 using Manuscrypt.Server.Data.DTOs.Post;
 using Manuscrypt.Server.Data.Models;
 using Manuscrypt.Server.Data.Repositories;
@@ -9,13 +8,11 @@ namespace Manuscrypt.Server.Services;
 
 public class PostService
 {
-    private readonly ManuscryptContext _context;
     private readonly PostRepo _postRepo;
     private readonly UserRepo _userRepo;
 
-    public PostService(ManuscryptContext context, PostRepo postRepo, UserRepo userRepo)
+    public PostService(PostRepo postRepo, UserRepo userRepo)
     {
-        _context = context;
         _postRepo = postRepo;
         _userRepo = userRepo;
     }
@@ -46,30 +43,7 @@ public class PostService
         };
 
         return postDTO;
-    }
-    public virtual async Task<IEnumerable<GetPostDTO>> GetPostsAsync()
-    {
-        var posts = await _postRepo.GetAllPostsAsync();
-
-        var userIds = posts.Select(p => p.UserId).Distinct().ToList();
-
-        var users = await _userRepo.GetAllAsync(userIds);
-       
-        var userDict = users.ToDictionary(u => u.Id, u => u.DisplayName);
-
-        var postDTOs = posts.Select(post => new GetPostDTO
-        {
-            Id = post.Id,
-            DisplayName = userDict.TryGetValue(post.UserId, out var displayName) ? displayName : "Unknown",
-            Title = post.Title,
-            Description = post.Description,
-            PublishedAt = post.PublishedAt,
-            Views = post.Views,
-            FileUrl = post.FileUrl
-        }).ToList();
-
-        return postDTOs;
-    }
+    } 
     public virtual async Task<IEnumerable<GetCommentDTO>> GetCommentsForPostAsync(int postId)
     {
         var comments = await _postRepo.GetCommentsForPostAsync(postId);
@@ -104,7 +78,6 @@ public class PostService
         };
 
         await _postRepo.AddAsync(post);
-        await _context.SaveChangesAsync();
 
         return post.Id;
     }
@@ -120,19 +93,9 @@ public class PostService
         post.Title = updatePostDTO.Title;
         post.Description = updatePostDTO.Description;
         post.FileUrl = updatePostDTO.FileUrl;
-        _postRepo.Update(post);
-        _context.SaveChanges();
+
+        await _postRepo.UpdateAsync(post);
     }
 
-    public virtual async Task DeletePostAsync(int postId)
-    {
-        var post = await _postRepo.GetAsync(postId);
-        if (post == null)
-        {
-            throw new PostDoesNotExistException(postId);
-        }
-
-        _postRepo.Delete(post);
-        _context.SaveChanges();
-    }
+    public virtual async Task DeletePostAsync(int postId) => await _postRepo.DeleteAsync(postId);
 }

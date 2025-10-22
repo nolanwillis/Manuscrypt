@@ -15,7 +15,7 @@ public class UserControllerTests
     [Fact]
     public async Task GetUserAsync_ReturnsOk_WhenFound()
     {
-        var mockService = new Mock<UserService>(null, null);
+        var mockService = new Mock<UserService>(null);
         var expected = new GetUserDTO { Id = 1 };
         mockService.Setup(s => s.GetUserAsync(1)).ReturnsAsync(expected);
         var controller = new UserController(mockService.Object);
@@ -30,7 +30,7 @@ public class UserControllerTests
     [Fact]
     public async Task GetUserAsync_ReturnsNotFound_WhenNotFound()
     {
-        var mockService = new Mock<UserService>(null, null);
+        var mockService = new Mock<UserService>(null);
         mockService.Setup(s => s.GetUserAsync(1)).ThrowsAsync(new UserDNEWithIdException(1));
         var controller = new UserController(mockService.Object);
 
@@ -42,7 +42,7 @@ public class UserControllerTests
     [Fact]
     public async Task GetUserAsync_ReturnsBadRequest_OnException()
     {
-        var mockService = new Mock<UserService>(null, null);
+        var mockService = new Mock<UserService>(null);
         mockService.Setup(s => s.GetUserAsync(1)).ThrowsAsync(new Exception());
         var controller = new UserController(mockService.Object);
 
@@ -54,7 +54,7 @@ public class UserControllerTests
     [Fact]
     public async Task GetCommentsByUserAsync_ReturnsOk()
     {
-        var mockService = new Mock<UserService>(null, null);
+        var mockService = new Mock<UserService>(null);
         var expected = new List<GetCommentDTO> { new GetCommentDTO { Id = 1 } };
         mockService.Setup(s => s.GetCommentsByUserAsync(1)).ReturnsAsync(expected);
         var controller = new UserController(mockService.Object);
@@ -69,7 +69,7 @@ public class UserControllerTests
     [Fact]
     public async Task GetCommentsByUserAsync_ReturnsBadRequest_OnException()
     {
-        var mockService = new Mock<UserService>(null, null);
+        var mockService = new Mock<UserService>(null);
         mockService.Setup(s => s.GetCommentsByUserAsync(1)).ThrowsAsync(new Exception());
         var controller = new UserController(mockService.Object);
 
@@ -81,7 +81,7 @@ public class UserControllerTests
     [Fact]
     public async Task GetPostsForUserAsync_ReturnsOk()
     {
-        var mockService = new Mock<UserService>(null, null);
+        var mockService = new Mock<UserService>(null);
         var expected = new List<GetPostDTO> { new GetPostDTO { Id = 1 } };
         mockService.Setup(s => s.GetPostsForUserAsync(1)).ReturnsAsync(expected);
         var controller = new UserController(mockService.Object);
@@ -96,7 +96,7 @@ public class UserControllerTests
     [Fact]
     public async Task GetPostsForUserAsync_ReturnsBadRequest_OnException()
     {
-        var mockService = new Mock<UserService>(null, null);
+        var mockService = new Mock<UserService>(null);
         mockService.Setup(s => s.GetPostsForUserAsync(1)).ThrowsAsync(new Exception());
         var controller = new UserController(mockService.Object);
 
@@ -108,7 +108,7 @@ public class UserControllerTests
     [Fact]
     public async Task GetSubscribersForUserAsync_ReturnsOk()
     {
-        var mockService = new Mock<UserService>(null, null);
+        var mockService = new Mock<UserService>(null);
         var expected = new List<GetSubscriptionDTO> { new GetSubscriptionDTO { Id = 1 } };
         mockService.Setup(s => s.GetSubscribersForUserAsync(1)).ReturnsAsync(expected);
         var controller = new UserController(mockService.Object);
@@ -123,7 +123,7 @@ public class UserControllerTests
     [Fact]
     public async Task GetSubscribersForUserAsync_ReturnsBadRequest_OnException()
     {
-        var mockService = new Mock<UserService>(null, null);
+        var mockService = new Mock<UserService>(null);
         mockService.Setup(s => s.GetSubscribersForUserAsync(1)).ThrowsAsync(new Exception());
         var controller = new UserController(mockService.Object);
 
@@ -135,7 +135,7 @@ public class UserControllerTests
     [Fact]
     public async Task GetSubscriptionsForUserAsync_ReturnsOk()
     {
-        var mockService = new Mock<UserService>(null, null);
+        var mockService = new Mock<UserService>(null);
         var expected = new List<GetSubscriptionDTO> { new GetSubscriptionDTO { Id = 1 } };
         mockService.Setup(s => s.GetSubscriptionsForUserAsync(1)).ReturnsAsync(expected);
         var controller = new UserController(mockService.Object);
@@ -150,7 +150,7 @@ public class UserControllerTests
     [Fact]
     public async Task GetSubscriptionsForUserAsync_ReturnsBadRequest_OnException()
     {
-        var mockService = new Mock<UserService>(null, null);
+        var mockService = new Mock<UserService>(null);
         mockService.Setup(s => s.GetSubscriptionsForUserAsync(1)).ThrowsAsync(new Exception());
         var controller = new UserController(mockService.Object);
 
@@ -162,7 +162,7 @@ public class UserControllerTests
     [Fact]
     public async Task CreateUserAsync_ReturnsCreated_WhenValid()
     {
-        var mockService = new Mock<UserService>(null, null);
+        var mockService = new Mock<UserService>(null);
         var createDto = new CreateUserDTO { DisplayName = "Test", Email = "test@example.com", Password = "pw" };
         mockService.Setup(s => s.CreateUserAsync(createDto)).ReturnsAsync(42);
         var controller = new UserController(mockService.Object);
@@ -176,7 +176,7 @@ public class UserControllerTests
     [Fact]
     public async Task CreateUserAsync_ReturnsBadRequest_WhenNull()
     {
-        var mockService = new Mock<UserService>(null, null);
+        var mockService = new Mock<UserService>(null);
         var controller = new UserController(mockService.Object);
 
         var result = await controller.CreateUserAsync(null);
@@ -187,7 +187,7 @@ public class UserControllerTests
     [Fact]
     public async Task CreateUserAsync_ReturnsBadRequest_OnException()
     {
-        var mockService = new Mock<UserService>(null, null);
+        var mockService = new Mock<UserService>(null);
         var createDto = new CreateUserDTO { DisplayName = "Test", Email = "test@example.com", Password = "pw" };
         mockService.Setup(s => s.CreateUserAsync(createDto)).ThrowsAsync(new Exception());
         var controller = new UserController(mockService.Object);
@@ -200,7 +200,7 @@ public class UserControllerTests
     [Fact]
     public async Task LoginAsync_ReturnsOk_WhenValid()
     {
-        var mockService = new Mock<UserService>(null, null);
+        var mockService = new Mock<UserService>(null);
         var loginDto = new LoginDTO { Email = "test@example.com", Password = "pw" };
         mockService.Setup(s => s.LoginAsync(loginDto)).ReturnsAsync(42);
         var controller = new UserController(mockService.Object);
@@ -217,7 +217,7 @@ public class UserControllerTests
     [Fact]
     public async Task LoginAsync_ReturnsNotFound_WhenUserNotFound()
     {
-        var mockService = new Mock<UserService>(null, null);
+        var mockService = new Mock<UserService>(null);
         var loginDto = new LoginDTO { Email = "test@example.com", Password = "pw" };
         mockService.Setup(s => s.LoginAsync(loginDto)).ThrowsAsync(new UserDNEWithEmailException("test@example.com"));
         var controller = new UserController(mockService.Object);
@@ -230,7 +230,7 @@ public class UserControllerTests
     [Fact]
     public async Task LoginAsync_ReturnsBadRequest_WhenNull()
     {
-        var mockService = new Mock<UserService>(null, null);
+        var mockService = new Mock<UserService>(null);
         var controller = new UserController(mockService.Object);
 
         var result = await controller.LoginAsync(null);
@@ -241,7 +241,7 @@ public class UserControllerTests
     [Fact]
     public async Task LoginAsync_ReturnsBadRequest_OnException()
     {
-        var mockService = new Mock<UserService>(null, null);
+        var mockService = new Mock<UserService>(null);
         var loginDto = new LoginDTO { Email = "test@example.com", Password = "pw" };
         mockService.Setup(s => s.LoginAsync(loginDto)).ThrowsAsync(new Exception());
         var controller = new UserController(mockService.Object);
