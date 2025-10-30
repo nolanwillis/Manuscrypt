@@ -5,9 +5,15 @@ VisualStudioVersion = 17.14.36518.9
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{54A90642-561A-4BB1-A94E-469ADEE60C69}") = "manuscrypt.client", "manuscrypt.client\manuscrypt.client.esproj", "{B6AA613A-6F6B-D0F6-EB1E-78F20395D3F4}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Manuscrypt.Server", "Manuscrypt.Server\Manuscrypt.Server.csproj", "{A4AB024B-C876-43C1-A461-E39D3A02706F}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Manuscrypt.SubscriptionService", "Manuscrypt.SubscriptionService\Manuscrypt.SubscriptionService.csproj", "{C298632C-643F-A1EE-EAD5-5A495ACE6DE5}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Manuscrypt.Server.Tests", "Manuscrypt.Server.Tests\Manuscrypt.Server.Tests.csproj", "{086F0E16-8D22-7737-9259-BA11FA209ECD}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Manuscrypt.Shared", "Manuscrypt.Shared\Manuscrypt.Shared.csproj", "{0AFF0F65-C4AA-4B3A-897D-FD7C384D08B7}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Manuscrypt.UserService", "Manuscrypt.UserService\Manuscrypt.UserService.csproj", "{A5593467-F273-9812-46D3-7AA726E9ED75}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Manuscrypt.PostService", "Manuscrypt.PostService\Manuscrypt.PostService.csproj", "{9A45EFB8-EBA6-28F1-0E82-EAA0E2B58FB0}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Manuscrypt.CommentService", "Manuscrypt.CommentService\Manuscrypt.CommentService.csproj", "{244766CE-32FC-E405-A154-91880CA49FEA}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -21,14 +27,26 @@ Global
 		{B6AA613A-6F6B-D0F6-EB1E-78F20395D3F4}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{B6AA613A-6F6B-D0F6-EB1E-78F20395D3F4}.Release|Any CPU.Build.0 = Release|Any CPU
 		{B6AA613A-6F6B-D0F6-EB1E-78F20395D3F4}.Release|Any CPU.Deploy.0 = Release|Any CPU
-		{A4AB024B-C876-43C1-A461-E39D3A02706F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{A4AB024B-C876-43C1-A461-E39D3A02706F}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{A4AB024B-C876-43C1-A461-E39D3A02706F}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{A4AB024B-C876-43C1-A461-E39D3A02706F}.Release|Any CPU.Build.0 = Release|Any CPU
-		{086F0E16-8D22-7737-9259-BA11FA209ECD}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{086F0E16-8D22-7737-9259-BA11FA209ECD}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{086F0E16-8D22-7737-9259-BA11FA209ECD}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{086F0E16-8D22-7737-9259-BA11FA209ECD}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C298632C-643F-A1EE-EAD5-5A495ACE6DE5}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C298632C-643F-A1EE-EAD5-5A495ACE6DE5}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C298632C-643F-A1EE-EAD5-5A495ACE6DE5}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C298632C-643F-A1EE-EAD5-5A495ACE6DE5}.Release|Any CPU.Build.0 = Release|Any CPU
+		{0AFF0F65-C4AA-4B3A-897D-FD7C384D08B7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0AFF0F65-C4AA-4B3A-897D-FD7C384D08B7}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0AFF0F65-C4AA-4B3A-897D-FD7C384D08B7}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0AFF0F65-C4AA-4B3A-897D-FD7C384D08B7}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A5593467-F273-9812-46D3-7AA726E9ED75}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A5593467-F273-9812-46D3-7AA726E9ED75}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A5593467-F273-9812-46D3-7AA726E9ED75}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A5593467-F273-9812-46D3-7AA726E9ED75}.Release|Any CPU.Build.0 = Release|Any CPU
+		{9A45EFB8-EBA6-28F1-0E82-EAA0E2B58FB0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9A45EFB8-EBA6-28F1-0E82-EAA0E2B58FB0}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9A45EFB8-EBA6-28F1-0E82-EAA0E2B58FB0}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{9A45EFB8-EBA6-28F1-0E82-EAA0E2B58FB0}.Release|Any CPU.Build.0 = Release|Any CPU
+		{244766CE-32FC-E405-A154-91880CA49FEA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{244766CE-32FC-E405-A154-91880CA49FEA}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{244766CE-32FC-E405-A154-91880CA49FEA}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{244766CE-32FC-E405-A154-91880CA49FEA}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
