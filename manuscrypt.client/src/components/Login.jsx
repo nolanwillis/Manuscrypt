@@ -1,7 +1,7 @@
 import React, { useState, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 
-export default function Login({ onUserIdReceived }) {
+export default function Login({ onTokenReceived }) {
     const emailRef = useRef('');
     const passwordRef = useRef('');
     const [error, setError] = useState(null);
@@ -37,10 +37,13 @@ export default function Login({ onUserIdReceived }) {
                 throw new Error(errorMsg || 'Failed to login');
             }
 
-            const user = await response.json();
+            const result = await response.json();
 
-            if (user && user.id && onUserIdReceived) {
-                onUserIdReceived(user.id);
+            if (result && result.token) {
+                localStorage.setItem('authToken', result.token);
+                if (onTokenReceived) {
+                    onTokenReceived(result.token);
+                }
             }
 
             emailRef.current.value = '';

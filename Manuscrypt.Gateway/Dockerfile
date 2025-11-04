@@ -5,25 +5,25 @@ FROM mcr.microsoft.com/dotnet/aspnet:9.0 AS base
 WORKDIR /app
 EXPOSE 80
 
+
 # This stage is used to build the service project
 FROM mcr.microsoft.com/dotnet/sdk:9.0 AS build
 ARG BUILD_CONFIGURATION=Release
 WORKDIR /src
-COPY ["Manuscrypt.PostService/Manuscrypt.PostService.csproj", "Manuscrypt.PostService/"]
-COPY ["../Manuscrypt.Shared/Manuscrypt.Shared.csproj", "../Manuscrypt.Shared/"]
-RUN dotnet restore "Manuscrypt.PostService/Manuscrypt.PostService.csproj"
+COPY ["Manuscrypt.Gateway/Manuscrypt.Gateway.csproj", "Manuscrypt.Gateway/"]
+RUN dotnet restore "./Manuscrypt.Gateway/Manuscrypt.Gateway.csproj"
 COPY . .
-WORKDIR /src/Manuscrypt.PostService
-RUN dotnet build "Manuscrypt.PostService.csproj" -c $BUILD_CONFIGURATION -o /app/build
+WORKDIR /src/Manuscrypt.Gateway
+RUN dotnet build "Manuscrypt.Gateway.csproj" -c $BUILD_CONFIGURATION -o /app/build
 
 # This stage is used to publish the service project to be copied to the final stage
 FROM build AS publish
 ARG BUILD_CONFIGURATION=Release
-WORKDIR /src/Manuscrypt.PostService
-RUN dotnet publish "Manuscrypt.PostService.csproj" -c $BUILD_CONFIGURATION -o /app/publish /p:UseAppHost=false
+WORKDIR /src/Manuscrypt.Gateway
+RUN dotnet publish "Manuscrypt.Gateway.csproj" -c $BUILD_CONFIGURATION -o /app/publish /p:UseAppHost=false
 
 # This stage is used in production or when running from VS in regular mode (Default when not using the Debug configuration)
 FROM base AS final
 WORKDIR /app
 COPY --from=publish /app/publish .
-ENTRYPOINT ["dotnet", "Manuscrypt.PostService.dll"]
+ENTRYPOINT ["dotnet", "Manuscrypt.Gateway.dll"]

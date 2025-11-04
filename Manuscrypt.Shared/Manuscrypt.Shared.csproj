@@ -8,7 +8,7 @@
 
   <ItemGroup>
     <Folder Include="DTOs\Comment\" />
-    <Folder Include="DTOs\User\" />
+    <Folder Include="DTOs\Auth\" />
     <Folder Include="DTOs\Subscription\" />
     <Folder Include="DTOs\Post\" />
   </ItemGroup>

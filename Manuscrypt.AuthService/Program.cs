@@ -1,15 +1,19 @@
-using Manuscrypt.PostService;
-using Manuscrypt.PostService.Data;
-using Manuscrypt.PostService.Data.Repositories;
-using Manuscrypt.Shared;
+using Manuscrypt.AuthService;
+using Manuscrypt.AuthService.Data;
+using Manuscrypt.AuthService.Data.Repositories;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
 
-builder.Services.AddDbContext<PostContext>(options => options.UseSqlite("Data Source=post.db"));
+builder.Services.AddDbContext<AuthContext>(options => options.UseSqlite("Data Source=user.db"));
+
+builder.Services.AddIdentity<User, IdentityRole>()
+    .AddEntityFrameworkStores<AuthContext>()
+    .AddDefaultTokenProviders();
 
 var jwtKey = builder.Configuration["Jwt:Key"];
 var jwtIssuer = builder.Configuration["Jwt:Issuer"];
@@ -32,28 +36,23 @@ builder.Services.AddAuthentication(options =>
     };
 });
 
-builder.Services.AddHttpClient<UserServiceClient>(client =>
-{
-    client.BaseAddress = new Uri("http://userservice");
-});
-
 builder.Services.AddControllers();
 
 builder.Services.AddSwaggerGen();
 
 builder.Services.AddEndpointsApiExplorer();
 
-builder.Services.AddScoped<PostRepo>();
 builder.Services.AddScoped<EventRepo>();
-builder.Services.AddScoped<PostDomainService>();
+builder.Services.AddScoped<AuthDomainService>();
 
 var app = builder.Build();
 
+// Ensure db is running and seed data.
 using (var scope = app.Services.CreateScope())
 {
-    var db = scope.ServiceProvider.GetRequiredService<PostContext>();
+    var db = scope.ServiceProvider.GetRequiredService<AuthContext>();
     db.Database.EnsureCreated();
-    await Seed.SeedPostsAsync(db, 10, 5);
+    await Seed.SeedUsersAsync(db, 10);
 }
 
 if (app.Environment.IsDevelopment())

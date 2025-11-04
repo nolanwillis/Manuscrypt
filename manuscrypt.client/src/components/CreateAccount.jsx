@@ -1,7 +1,7 @@
 import React, { useState, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 
-export default function CreateAccount({ onUserIdReceived }) {
+export default function CreateAccount({ onTokenReceived }) {
     const displayNameRef = useRef('');
     const emailRef = useRef('');
     const passwordRef = useRef('');
@@ -42,7 +42,7 @@ export default function CreateAccount({ onUserIdReceived }) {
         }
 
         try {
-            const response = await fetch('https://localhost:7053/user', {
+            const response = await fetch('http://localhost:30768/auth', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -59,10 +59,14 @@ export default function CreateAccount({ onUserIdReceived }) {
                 throw new Error(errorMsg || 'Failed to create account');
             }
 
-            const user = await response.json();
+            const result = await response.json();
 
-            if (user && user.id && onUserIdReceived) {
-                onUserIdReceived(user.id);
+            if (result && result.token) {
+                localStorage.setItem('authToken', result.token);
+                if (onTokenReceived) {
+                    onTokenReceived();
+                }
+                console.log(result.token);
             }
 
             displayNameRef.current.value = '';

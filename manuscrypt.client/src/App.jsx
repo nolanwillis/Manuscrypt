@@ -9,21 +9,23 @@ import MyChannel from './components/MyAccount.jsx';
 import Post from './components/Post.jsx'
 
 export default function App() {
-    const [userId, setUserId] = useState(0);
+    const [isLoggedIn, setIsLoggedIn] = useState(false);
 
     useEffect(() => {
-        const storedUserId = sessionStorage.getItem('userId');
-        setUserId(storedUserId);
+        const token = localStorage.getItem('authToken');
+        if (token)
+        {
+            setIsLoggedIn(true);
+        }
     }, []);
 
     const handleLogoutClicked = () => {
-        sessionStorage.removeItem('userId');
-        setUserId(0);
+        localStorage.removeItem('');
+        setIsLoggedIn(false);
     };
 
-    const handleUserIdReceived = (userId) => {
-        sessionStorage.setItem('userId', userId);
-        setUserId(userId);
+    const handleTokenReceived = () => {
+        setIsLoggedIn(true);
     };
 
     return (
@@ -32,14 +34,14 @@ export default function App() {
                 <Route
                     path="/"
                     element={
-                        <Layout userId={userId} logoutBtnHandler={handleLogoutClicked} />
+                        <Layout loggedInStatus={isLoggedIn} logoutBtnHandler={handleLogoutClicked} />
                     }
                 >
                     <Route index element={<Home />} />
                     <Route path="my-account" element={<MyChannel />} />
                     <Route path="create-post" element={<CreatePost />} />
-                    <Route path="login" element={<Login onUserIdReceived={handleUserIdReceived} />} />
-                    <Route path="create-account" element={<CreateAccount onUserIdReceived={handleUserIdReceived} />} />
+                    <Route path="login" element={<Login onTokenReceived={handleTokenReceived} />} />
+                    <Route path="create-account" element={<CreateAccount onTokenReceived={handleTokenReceived} />} />
                     <Route path="post/:postId" element={<Post />} />
                 </Route>
                 <Route path="*" element={<Navigate to="/" />} />
