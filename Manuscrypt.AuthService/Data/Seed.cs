@@ -1,31 +1,30 @@
-﻿namespace Manuscrypt.AuthService.Data;
+﻿using Microsoft.AspNetCore.Identity;
+
+namespace Manuscrypt.AuthService.Data;
 
 public class Seed
 {
-    public static async Task SeedUsersAsync(AuthContext context, int userCount)
+    public static async Task SeedUsersAsync(UserManager<User> userManager, int userCount)
     {
-        //if (await context.Users.AnyAsync())
-        //{
-        //    return;
-        //}
+        foreach (var user in userManager.Users)
+        {
+            await userManager.DeleteAsync(user);
+        }
 
-        //var users = new List<User>();
+        for (int i = 1; i <= userCount; i++)
+        {
+            var user = new User
+            {
+                SeedId = i,
+                UserName = $"user{i}",
+                Email = $"user{i}@somewhere.com",
+                DisplayName = $"User{i}",
+                PhotoUrl = $"PhotoUrl{i}.com",
+                Description = $"User {i}'s description.",
+                CreatedAt = DateTime.UtcNow.AddDays(-i)
+            };
 
-        //for (int i = 1; i <= userCount; i++)
-        //{
-        //    users.Add(new User
-        //    {
-        //        Id = i,
-        //        DisplayName = $"User{i}",
-        //        PhotoUrl = $"PhotoUrl{i}.com",
-        //        Description = $"User {i}'s description.",
-        //        Email = $"user{i}@somewhere.com",
-        //        PasswordHash = BCrypt.Net.BCrypt.HashPassword(i.ToString()),
-        //        CreatedAt = DateTime.UtcNow.AddDays(-i)
-        //    });
-        //}
-
-        //await context.Users.AddRangeAsync(users);
-        //await context.SaveChangesAsync();
+            await userManager.CreateAsync(user, $"Password{i}!");
+        }
     }
 }

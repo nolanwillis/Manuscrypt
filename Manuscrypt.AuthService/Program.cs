@@ -52,7 +52,9 @@ using (var scope = app.Services.CreateScope())
 {
     var db = scope.ServiceProvider.GetRequiredService<AuthContext>();
     db.Database.EnsureCreated();
-    await Seed.SeedUsersAsync(db, 10);
+
+    var userManager = scope.ServiceProvider.GetRequiredService<UserManager<User>>();
+    await Seed.SeedUsersAsync(userManager, 10);
 }
 
 if (app.Environment.IsDevelopment())

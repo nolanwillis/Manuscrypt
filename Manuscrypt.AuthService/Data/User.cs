@@ -1,9 +1,12 @@
-﻿using Microsoft.AspNetCore.Identity;
+﻿using System.ComponentModel.DataAnnotations.Schema;
+using Microsoft.AspNetCore.Identity;
 
 namespace Manuscrypt.AuthService.Data
 {
     public class User : IdentityUser
     {
+        // For testing only
+        public int SeedId { get; set; }
         public string DisplayName { get; set; } = string.Empty;
         public string PhotoUrl { get; set; } = string.Empty;
         public string Description { get; set; } = string.Empty;

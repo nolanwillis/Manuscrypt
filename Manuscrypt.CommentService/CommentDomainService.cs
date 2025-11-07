@@ -10,15 +10,15 @@ namespace Manuscrypt.CommentService
     {
         private readonly CommentRepo _commentRepo;
         private readonly EventRepo _eventRepo;
-        private readonly UserServiceClient _userServiceClient;
+        private readonly AuthServiceClient _authServiceClient;
         private readonly PostServiceClient _postServiceClient;
 
-        public CommentDomainService(CommentRepo commentRepo, EventRepo eventRepo, UserServiceClient userServiceClient, 
+        public CommentDomainService(CommentRepo commentRepo, EventRepo eventRepo, AuthServiceClient authServiceClient, 
             PostServiceClient postServiceClient)
         {
             _commentRepo = commentRepo;
             _eventRepo = eventRepo;
-            _userServiceClient = userServiceClient;
+            _authServiceClient = authServiceClient;
             _postServiceClient = postServiceClient;
         }
 
@@ -47,7 +47,7 @@ namespace Manuscrypt.CommentService
             // Ensure the user exists.
             try
             {
-                await _userServiceClient.GetAsync(userId);
+                await _authServiceClient.GetAsync(userId);
             }
             catch (HttpRequestException)
             {
@@ -102,7 +102,7 @@ namespace Manuscrypt.CommentService
             // Ensure the associated user exists.
             try
             {
-                await _userServiceClient.GetAsync(createCommentDTO.UserId);
+                await _authServiceClient.GetAsync(createCommentDTO.UserId);
             }
             catch (HttpRequestException)
             {

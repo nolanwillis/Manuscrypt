@@ -23,8 +23,26 @@ public class AuthController : ControllerBase
     {
         try
         {
-            var userDTO = await _domainService.GetAsync(id);
-            return Ok(userDTO);
+            var getUserDTO = await _domainService.GetAsync(id);
+            return Ok(getUserDTO);
+        }
+        catch (UserDoesNotExistWithIdException ex)
+        {
+            return NotFound(ex.Message);
+        }
+        catch (Exception ex)
+        {
+            return BadRequest(ex.Message);
+        }
+    }
+
+    [HttpGet("dev/{id:int}")]
+    public async Task<ActionResult<GetUserDTO>> GetBySeedIdAsync(int id)
+    {
+        try
+        {
+            var getUserDTO = await _domainService.GetBySeedIdAsync(id);
+            return Ok(getUserDTO);
         }
         catch (UserDoesNotExistWithIdException ex)
         {

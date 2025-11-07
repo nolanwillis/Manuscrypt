@@ -32,9 +32,9 @@ builder.Services.AddAuthentication(options =>
     };
 });
 
-builder.Services.AddHttpClient<UserServiceClient>(client =>
+builder.Services.AddHttpClient<AuthServiceClient>(client =>
 {
-    client.BaseAddress = new Uri("http://userservice"); 
+    client.BaseAddress = new Uri("http://authservice"); 
 });
 
 builder.Services.AddControllers();
@@ -53,6 +53,7 @@ using (var scope = app.Services.CreateScope())
 {
     var db = scope.ServiceProvider.GetRequiredService<SubscriptionContext>();
     db.Database.EnsureCreated();
+    await Seed.SeedSubscriptionsAsync(db, 10);
 }
 
 if (app.Environment.IsDevelopment())

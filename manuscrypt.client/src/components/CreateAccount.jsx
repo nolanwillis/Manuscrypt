@@ -42,7 +42,7 @@ export default function CreateAccount({ onTokenReceived }) {
         }
 
         try {
-            const response = await fetch('http://localhost:30768/auth', {
+            const response = await fetch('http://localhost:8080/auth', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',

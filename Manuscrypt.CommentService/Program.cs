@@ -32,9 +32,9 @@ builder.Services.AddAuthentication(options =>
     };
 });
 
-builder.Services.AddHttpClient<UserServiceClient>(client =>
+builder.Services.AddHttpClient<AuthServiceClient>(client =>
 {
-    client.BaseAddress = new Uri("http://userservice");
+    client.BaseAddress = new Uri("http://authservice");
 });
 
 builder.Services.AddHttpClient<PostServiceClient>(client =>
@@ -58,7 +58,7 @@ using (var scope = app.Services.CreateScope())
 {
     var db = scope.ServiceProvider.GetRequiredService<CommentContext>();
     db.Database.EnsureCreated();
-    await Seed.SeedCommentsAsync(db, 10, 10, 10);
+    await Seed.SeedCommentsAsync(db, 10);
 }
 
 if (app.Environment.IsDevelopment())

@@ -10,13 +10,13 @@ public class PostDomainService
 {
     private readonly PostRepo _postRepo;
     private readonly EventRepo _eventRepo;
-    private readonly UserServiceClient _userServiceClient;
+    private readonly AuthServiceClient _authServiceClient;
 
-    public PostDomainService(PostRepo postRepo, EventRepo eventRepo, UserServiceClient userServiceClient)
+    public PostDomainService(PostRepo postRepo, EventRepo eventRepo, AuthServiceClient authServiceClient)
     {
         _postRepo = postRepo;
         _eventRepo = eventRepo;
-        _userServiceClient = userServiceClient;
+        _authServiceClient = authServiceClient;
     }
 
     public virtual async Task<GetPostDTO> GetPostAsync(int postId)
@@ -29,7 +29,7 @@ public class PostDomainService
 
         try
         {
-            var user = await _userServiceClient.GetAsync(post.UserId);
+            var user = await _authServiceClient.GetAsync(post.UserId);
             
             var postDTO = new GetPostDTO
             {
@@ -54,7 +54,7 @@ public class PostDomainService
     {
         try
         {
-            var user = await _userServiceClient.GetAsync(userId);
+            var user = await _authServiceClient.GetAsync(userId);
             var posts = await _postRepo.GetPostsByUserAsync(userId);
 
             var getPostDTOS = posts.Select(post => new GetPostDTO
@@ -83,7 +83,7 @@ public class PostDomainService
     {
         try
         {
-            var user = await _userServiceClient.GetAsync(createPostDTO.UserId);
+            var user = await _authServiceClient.GetAsync(createPostDTO.UserId);
             
             var post = new Post
             {

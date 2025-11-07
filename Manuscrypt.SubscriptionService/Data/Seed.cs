@@ -4,32 +4,30 @@ namespace Manuscrypt.SubscriptionService.Data;
 
 public static class Seed
 {
-    public static async Task SeedSubscriptionsAsync(SubscriptionContext context, int subscriptionCount)
+    public static async Task SeedSubscriptionsAsync(SubscriptionContext context, int userCount)
     {
-        if (await context.Subscriptions.AnyAsync())
+        foreach (var subscription in context.Subscriptions)
         {
-            return;
+            context.Subscriptions.Remove(subscription);
         }
+        await context.SaveChangesAsync();
 
-        var rand = new Random();
         var subscriptions = new List<Subscription>();
 
-        for (int i = 1; i <= subscriptionCount; i++)
+        // Have every user subscribe to every other user.
+        for (int i = 1; i <= userCount; i++)
         {
-            int subscriberId = rand.Next(1, 1000);
-            int subscribedToId;
-            do
+            for (int j = 1; j <= userCount; j++)
             {
-                subscribedToId = rand.Next(1, 1000);
-            } 
-            while (subscribedToId == subscriberId); // Prevent self-subscription
+                if (i == j) continue; // Prevent self-subscription
 
-            subscriptions.Add(new Subscription
-            {
-                SubscriberId = subscriberId,
-                SubscribedToId = subscribedToId,
-                CreatedAt = DateTime.UtcNow.AddDays(-rand.Next(0, 365))
-            });
+                subscriptions.Add(new Subscription
+                {
+                    SubscriberId = i,
+                    SubscribedToId = j,
+                    CreatedAt = DateTime.UtcNow
+                });
+            }
         }
 
         await context.Subscriptions.AddRangeAsync(subscriptions);

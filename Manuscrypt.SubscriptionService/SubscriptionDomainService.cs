@@ -10,14 +10,14 @@ public class SubscriptionDomainService
 {
     private readonly SubscriptionRepo _subscriptionRepo;
     private readonly EventRepo _eventRepo;
-    private readonly UserServiceClient _userServiceClient;
+    private readonly AuthServiceClient _authServiceClient;
 
     public SubscriptionDomainService(SubscriptionRepo subscriptionRepo, EventRepo eventRepo, 
-        UserServiceClient userServiceClient)
+        AuthServiceClient authServiceClient)
     {
         _subscriptionRepo = subscriptionRepo;
         _eventRepo = eventRepo; 
-        _userServiceClient = userServiceClient;
+        _authServiceClient = authServiceClient;
     }
 
     public virtual async Task<GetSubscriptionDTO> GetSubscriptionAsync(int subscriptionId)
@@ -85,8 +85,8 @@ public class SubscriptionDomainService
         // Verify the users involved in the subscription exist.
         try
         {
-            var subsriber = await _userServiceClient.GetAsync(subscriptionDTO.SubscriberId);
-            var subscribedTo = await _userServiceClient.GetAsync(subscriptionDTO.SubscribedToId);
+            var subscriber = await _authServiceClient.GetAsync(subscriptionDTO.SubscriberId);
+            var subscribedTo = await _authServiceClient.GetAsync(subscriptionDTO.SubscribedToId);
         }
         catch (HttpRequestException)
         {

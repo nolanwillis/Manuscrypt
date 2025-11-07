@@ -46,7 +46,7 @@ public class AuthDomainService
 
         return getUserDTO;
     }
-   
+
     public virtual async Task<IEnumerable<GetUserDTO>> GetUsersByIdsAsync(IEnumerable<string> userIds)
     {
         var users = await _userManager.Users.Where(u => userIds.Contains(u.Id)).ToListAsync();
@@ -60,6 +60,27 @@ public class AuthDomainService
             CreatedAt = u.CreatedAt,
         });
 
+        return getUserDTO;
+    }
+    
+    public virtual async Task<GetUserDTO?> GetBySeedIdAsync(int seedId)
+    {
+        var user = await _userManager.Users.FirstOrDefaultAsync(u => u.SeedId == seedId);
+        if (user == null)
+        {
+            return null;
+        }
+
+        var getUserDTO = new GetUserDTO
+        {
+            Id = user.Id,
+            DisplayName = user.DisplayName,
+            Description = user.Description,
+            Email = user.Email ?? string.Empty,
+            CreatedAt = user.CreatedAt,
+            PhotoUrl = user.PhotoUrl
+        };
+        
         return getUserDTO;
     }
 
